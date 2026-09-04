@@ -7,7 +7,8 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
+    "local": "bash ./scripts/dev.sh",
     "build": "tsc --noEmit && vite build",
     "start": "vite preview --host 127.0.0.1 --port 3000",
     "check:agnostic": "node scripts/check-agent-agnostic.mjs",

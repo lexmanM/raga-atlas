@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ ! -x .venv/bin/python ]]; then
+  python3 -m venv .venv
+  . .venv/bin/activate
+  python -m pip install -e '.[dev]'
+else
+  . .venv/bin/activate
+fi
+
+if [[ ! -d node_modules ]]; then
+  npm install --no-audit --no-fund
+fi
+
 cleanup() {
   if [[ -n "${SWARA_API_PID:-}" ]]; then
     kill "$SWARA_API_PID" 2>/dev/null || true

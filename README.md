@@ -1,6 +1,6 @@
 # Swara
 
-A local-first Carnatic vocal practice archive and raga reference. Recordings remain ordinary 48 kHz mono WAV files under `~/Music/Swara`; SQLite is only an index and can be rebuilt from each folder's `session.json`.
+A local-first Carnatic vocal practice archive and raga reference. Recordings stay as ordinary 48 kHz mono WAV files in a local library directory; SQLite is only an index and can be rebuilt from each folder's `session.json`.
 
 ## Development policy
 
@@ -22,15 +22,21 @@ prepared as public examples.
 
 Requires Node 22+, Python 3.11+, and `ffmpeg`.
 
+For the easiest start on macOS, double-click [`Launch Swara.command`](Launch%20Swara.command).
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e '.[dev]'
-npm install
-./scripts/dev.sh
+npm run local
 ```
 
-The interface runs at `http://localhost:3000` and the local API at `http://127.0.0.1:8000`.
+On first run, the launcher creates `.venv`, installs the Python package in editable
+mode, installs Node dependencies if needed, then starts both services. The
+interface runs at `http://localhost:3000` and the local API at `http://127.0.0.1:8000`.
+
+If you want the library to live somewhere other than the default folder, set:
+
+```bash
+SWARA_LIBRARY=/path/to/your/library npm run local
+```
 
 ## Ingest a recording
 
