@@ -54,16 +54,19 @@ jobs:
           touch dist/.nojekyll
           # Single document app: unknown paths fall back to the same page.
           cp dist/index.html dist/404.html
-          mv dist "${RUNNER_TEMP}/site"
 
+          # Publish from a separate worktree rather than switching branches in
+          # place: the source checkout is dirty after npm install, and gh-pages
+          # carries no .gitignore, so `git add -A` there would swallow
+          # node_modules.
           git fetch origin gh-pages
-          git checkout gh-pages
-          git rm -rq . --ignore-unmatch
-          cp -R "${RUNNER_TEMP}/site/." .
-          git add -A
-          if git diff --cached --quiet; then
+          git worktree add -B gh-pages "${RUNNER_TEMP}/pages" origin/gh-pages
+          git -C "${RUNNER_TEMP}/pages" rm -rq . --ignore-unmatch
+          cp -R dist/. "${RUNNER_TEMP}/pages/"
+          git -C "${RUNNER_TEMP}/pages" add -A
+          if git -C "${RUNNER_TEMP}/pages" diff --cached --quiet; then
             echo "Site output is unchanged; nothing to publish."
             exit 0
           fi
-          git commit -m "Publish site from ${GITHUB_SHA}"
-          git push origin gh-pages
+          git -C "${RUNNER_TEMP}/pages" commit -m "Publish site from ${GITHUB_SHA}"
+          git -C "${RUNNER_TEMP}/pages" push origin gh-pages
