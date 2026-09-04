@@ -7,7 +7,7 @@ import '@/app/globals.css';
 const root = document.getElementById('root');
 
 if (!root) {
-  throw new Error('Swara could not find its application root');
+  throw new Error('Ragas could not find its application root');
 }
 
 createRoot(root).render(

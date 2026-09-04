@@ -66,6 +66,19 @@ export const JANYA_RAGAS: Raga[] = [
   janya('Kanada', 22, [s('S',0),s('R2',2),s('G2',3),s('M1',5),s('P',7),s('D2',9),s('N2',10),s('S',12)], [s('N2',10),s('P',7),s('M1',5),s('G2',3),s('M1',5),s('R2',2),s('S',0)]),
 ];
 
+export const UPPER_SA: Swara = { label: 'S\u0307', semitones: 12 };
+const withUpperSa = (list: Swara[], at: 'start' | 'end'): Swara[] => {
+  const index = at === 'end' ? list.length - 1 : 0;
+  if (list[index]?.semitones !== 12) return at === 'end' ? [...list, UPPER_SA] : [UPPER_SA, ...list];
+  const replaced = [...list]; replaced[index] = UPPER_SA; return replaced;
+};
+/** Arohana ending on the upper sa, whether or not the raga data spells it out. */
+export const ascent = (raga: Raga): Swara[] => withUpperSa(raga.arohana, 'end');
+/** Avarohana starting from the upper sa, so the turn sounds it a second time. */
+export const descent = (raga: Raga): Swara[] => withUpperSa(raga.avarohana, 'start');
+/** The way a raga is sung: up to the upper sa, that sa again, then down to sa. */
+export const fullScale = (raga: Raga): Swara[] => [...ascent(raga), ...descent(raga)];
+
 export const MELAKARTAS = Array.from({ length: 72 }, (_, i) => melakarta(i + 1));
 export const ALL_RAGAS = [...JANYA_RAGAS, ...MELAKARTAS];
 export const centsFor = (semitones: number, temperament: 'just' | 'equal') => semitones === 12 ? 1200 : temperament === 'just' ? JUST_CENTS[semitones] : semitones * 100;

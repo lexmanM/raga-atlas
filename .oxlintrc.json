@@ -26,8 +26,6 @@
     "build/**",
     "dist/**",
     "coverage/**",
-    "components/ui/**",
-    "hooks/**",
     "next-env.d.ts"
   ],
   "rules": {

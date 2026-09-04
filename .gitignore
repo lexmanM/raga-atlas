@@ -32,16 +32,6 @@ yarn-error.log*
 # local environment
 .env*
 
-# local Swara libraries and recordings
-*.wav
-*.m4a
-*.mp3
-*.flac
-*.webm
-session.json
-swara.sqlite3
-*.f0.npz
-
 # generated files
 .vercel
 /outputs/

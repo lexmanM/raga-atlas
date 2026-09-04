@@ -6,13 +6,24 @@ export type PlaybackHandle = { stop: () => void };
 
 let context: AudioContext | null = null;
 let reverb: ConvolverNode | null = null;
+let analyser: AnalyserNode | null = null;
 const stringBuffers = new Map<string, AudioBuffer>();
 
 const getContext = () => {
   context ??= new AudioContext({ sampleRate: 48000 });
+  if (!analyser) {
+    analyser = context.createAnalyser();
+    analyser.fftSize = 4096;
+    analyser.smoothingTimeConstant = 0.78;
+    analyser.connect(context.destination);
+  }
   if (context.state === 'suspended') void context.resume();
   return context;
 };
+
+export function getAudioAnalyser() {
+  return analyser;
+}
 
 function impulse(ctx: AudioContext) {
   if (reverb) return reverb;
@@ -53,18 +64,26 @@ function scheduleBowed(ctx: AudioContext, frequency: number, previous: number, s
 }
 
 function scheduleVeena(ctx: AudioContext, frequency: number, start: number, duration: number, output: GainNode) {
-  const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, Math.max(3.4, duration + .3)); const peak = ctx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 440; peak.Q.value = 2.2; peak.gain.value = 5; const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 5200; const gain = ctx.createGain(); gain.gain.value = .5; source.connect(peak); peak.connect(lowpass); wetAndDry(ctx, lowpass, gain); gain.connect(output); source.start(start); source.stop(start + duration);
+  const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, Math.max(3.4, duration + .5)); const peak = ctx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 440; peak.Q.value = 2.2; peak.gain.value = 5; const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 5200;
+  // A plucked string is damped, not cut: let it ring to the beat, then fade.
+  const release = .22; const gain = ctx.createGain(); gain.gain.setValueAtTime(.5, start); gain.gain.setValueAtTime(.5, start + duration); gain.gain.exponentialRampToValueAtTime(.0001, start + duration + release);
+  source.connect(peak); peak.connect(lowpass); wetAndDry(ctx, lowpass, gain); gain.connect(output); source.start(start); source.stop(start + duration + release);
 }
 
-export function playRaga(options: { sequence: Swara[]; sruti: number; temperament: Temperament; voice: Voice; kampita: boolean; onSwara: (swara: Swara | null) => void }): PlaybackHandle {
-  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .64; output.connect(ctx.destination); const noteDuration = .72; const base = ctx.currentTime + .08; const schedule = options.sequence;
-  schedule.forEach((swara, index) => { const start = base + index * noteDuration; const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.label === 'S' || swara.label === 'P'; if (options.voice === 'bowed') scheduleBowed(ctx, frequency, prev, start, noteDuration, output, options.kampita, fixed); else scheduleVeena(ctx, frequency, start, noteDuration, output); });
-  let raf = 0; const tick = () => { const index = Math.floor((ctx.currentTime - base) / noteDuration); options.onSwara(index >= 0 && index < schedule.length ? schedule[index] : null); if (index <= schedule.length) raf = requestAnimationFrame(tick); }; raf = requestAnimationFrame(tick);
-  return { stop: () => { cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null); } };
+export function playRaga(options: { sequence: Swara[]; sruti: number; temperament: Temperament; voice?: Voice; kampita: boolean; tempo?: number; onSwara: (swara: Swara | null, index: number) => void }): PlaybackHandle {
+  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .64; output.connect(analyser ?? ctx.destination); const voice = options.voice ?? 'veena'; const beat = .72 / (options.tempo ?? 1); const schedule = options.sequence;
+  // The last note of the descent is held so the phrase lands rather than stops.
+  const lengthOf = (index: number) => index === schedule.length - 1 ? beat * 1.6 : beat;
+  const starts: number[] = []; let cursor = ctx.currentTime + .08;
+  for (let index = 0; index < schedule.length; index++) { starts.push(cursor); cursor += lengthOf(index); }
+  const finish = cursor + .25;
+  schedule.forEach((swara, index) => { const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.semitones % 12 === 0 || swara.semitones === 7; if (voice === 'bowed') scheduleBowed(ctx, frequency, prev, starts[index], lengthOf(index), output, options.kampita, fixed); else scheduleVeena(ctx, frequency, starts[index], lengthOf(index), output); });
+  let raf = 0; const tick = () => { const now = ctx.currentTime; let at = -1; for (let index = 0; index < schedule.length; index++) if (now >= starts[index] && now < starts[index] + lengthOf(index)) at = index; options.onSwara(at < 0 ? null : schedule[at], at); if (now < finish) raf = requestAnimationFrame(tick); else options.onSwara(null, -1); }; raf = requestAnimationFrame(tick);
+  return { stop: () => { cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null, -1); } };
 }
 
 export function startDrone(sruti: number): PlaybackHandle {
-  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .22; output.connect(ctx.destination); const frequencies = [sruti * .75, sruti, sruti, sruti / 2]; const sources: AudioBufferSourceNode[] = [];
+  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .22; output.connect(analyser ?? ctx.destination); const frequencies = [sruti * .75, sruti, sruti, sruti / 2]; const sources: AudioBufferSourceNode[] = [];
   for (let i = 0; i < 48; i++) { const frequency = frequencies[i % 4]; const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, 2.6); source.connect(output); source.start(ctx.currentTime + .04 + i * .64); sources.push(source); }
   return { stop: () => { output.gain.setTargetAtTime(0, ctx.currentTime, .03); sources.forEach((source) => { try { source.stop(ctx.currentTime + .2); } catch {} }); } };
 }

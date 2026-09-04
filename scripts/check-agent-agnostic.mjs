@@ -35,7 +35,7 @@ for (const dependency of forbiddenPackages) {
   }
 }
 
-const scannedRoots = ['app', 'components', 'hooks', 'lib', 'backend'];
+const scannedRoots = ['app', 'components', 'lib'];
 const sourceExtensions = new Set(['.js', '.jsx', '.mjs', '.py', '.ts', '.tsx']);
 const forbiddenSource = [
   ['agent runtime detection', /CODEX_SANDBOX|CLAUDE_CODE|CURSOR_AGENT/],

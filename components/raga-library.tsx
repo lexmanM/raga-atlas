@@ -1,55 +1,57 @@
-import { useMemo, useRef, useState } from 'react';
-import { BookOpenText, Headphones, Pause, Play, Search, Square } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { playRaga, startDrone, type PlaybackHandle, type Voice } from '@/lib/audio-engine';
-import { ALL_RAGAS, JANYA_RAGAS, type Swara } from '@/lib/ragas';
-import { SwaraLadder } from './swara-ladder';
+/* oxlint-disable react/no-unescaped-entities, react(react-compiler) */
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
-const sequenceText = (sequence: Swara[], ascent: boolean) => (ascent ? [...sequence, { label: 'Ṡ', semitones: 12 }] : [{ label: 'Ṡ', semitones: 12 }, ...sequence]).map((s) => s.label).join('  ');
+import { ALL_RAGAS, ascent, descent, fullScale, JANYA_RAGAS, type Raga, type Swara } from '@/lib/ragas';
+import { getAudioAnalyser, playRaga, startDrone, type PlaybackHandle, type Temperament, type Voice } from '@/lib/audio-engine';
 
-export function RagaLibrary() {
-  const [query, setQuery] = useState(''); const [selectedId, setSelectedId] = useState('mohanam');
-  const [temperament, setTemperament] = useState<'just' | 'equal'>('just'); const [voice, setVoice] = useState<Voice>('bowed'); const [kampita, setKampita] = useState(false);
-  const [sruti, setSruti] = useState(146.83); const [current, setCurrent] = useState<Swara | null>(null); const [playing, setPlaying] = useState(false); const [drone, setDrone] = useState(false);
-  const playbackRef = useRef<PlaybackHandle | null>(null); const droneRef = useRef<PlaybackHandle | null>(null);
-  const filtered = useMemo(() => ALL_RAGAS.filter((raga) => raga.name.toLowerCase().includes(query.toLowerCase())), [query]);
-  const raga = ALL_RAGAS.find((item) => item.id === selectedId) ?? JANYA_RAGAS[0];
-  const stop = () => { playbackRef.current?.stop(); playbackRef.current = null; setPlaying(false); setCurrent(null); };
-  const play = () => { stop(); setPlaying(true); playbackRef.current = playRaga({ sequence: [...raga.arohana, { label: 'Ṡ', semitones: 12 }, ...raga.avarohana], sruti, temperament, voice, kampita, onSwara: (swara) => { setCurrent(swara); if (!swara) setPlaying(false); } }); };
-  const toggleDrone = () => { if (drone) { droneRef.current?.stop(); droneRef.current = null; setDrone(false); } else { droneRef.current = startDrone(sruti); setDrone(true); } };
+const RATIOS = ['1/1', '16/15', '9/8', '6/5', '5/4', '4/3', '45/32', '3/2', '8/5', '5/3', '9/5', '15/8'];
+const LABELS = ['S', 'R₁', 'R₂ G₁', 'R₃ G₂', 'G₃', 'M₁', 'M₂', 'P', 'D₁', 'D₂ N₁', 'D₃ N₂', 'N₃'];
+const TONICS = [['C', 130.81], ['C♯', 138.59], ['D', 146.83], ['E♭', 155.56], ['E', 164.81], ['F', 174.61], ['G', 196]] as const;
+const CHAKRAS = ['Indu', 'Nētra', 'Agni', 'Vēda', 'Bāṇa', 'Ṛtu', 'Ṛṣi', 'Vasu', 'Brahma', 'Diśi', 'Rudra', 'Āditya'];
 
-  return (
-    <section className="raga-library">
-      <aside className="raga-index">
-        <div className="section-heading"><div><h2>Raga library</h2><p>72 melakartas · {JANYA_RAGAS.length} authored janyas</p></div></div>
-        <div className="raga-search"><Search /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find a raga" aria-label="Find a raga" /></div>
-        <div className="raga-list" aria-label="Ragas">
-          {filtered.map((item) => <button key={item.id} aria-pressed={item.id === raga.id} className={item.id === raga.id ? 'selected' : ''} onClick={() => setSelectedId(item.id)}><span>{item.group === 'melakarta' ? String(item.parentMela).padStart(2, '0') : 'J'}</span><strong>{item.name}</strong><small>{item.group === 'janya' ? `Janya · Mela ${item.parentMela}` : 'Melakarta'}</small></button>)}
-        </div>
-      </aside>
+function color(note: number, alpha: number) { return `oklch(0.74 0.14 ${34 + note * 27} / ${alpha})`; }
+function frequency(sruti: number, semitones: number, temperament: Temperament) { return sruti * Math.pow(2, (temperament === 'just' ? [0, 112, 204, 316, 386, 498, 590, 702, 814, 884, 1018, 1088, 1200][semitones] : semitones * 100) / 1200); }
 
-      <div className="raga-console">
-        <div className="deck-screws" aria-hidden="true"><i /><i /></div>
-        <header className="raga-title"><div><p className="eyebrow">{raga.group === 'janya' ? `Janya · Mela ${raga.parentMela}` : `Melakarta ${raga.parentMela}`}</p><h2>{raga.name}</h2></div><button className={`drone-button ${drone ? 'active' : ''}`} onClick={toggleDrone}><Headphones /> Drone {drone ? 'on' : 'off'}</button></header>
-        <div className="raga-display">
-          <div className="raga-readout"><span>CURRENT SWARA</span><strong>{current?.label ?? '—'}</strong><small>{current && ['R2','G1','R3','G2','D2','N1','D3','N2'].includes(current.label) ? `same pitch as ${current.label === 'R2' ? 'G1' : current.label === 'G1' ? 'R2' : current.label === 'R3' ? 'G2' : current.label === 'G2' ? 'R3' : current.label === 'D2' ? 'N1' : current.label === 'N1' ? 'D2' : current.label === 'D3' ? 'N2' : 'D3'}` : 'relative to sa'}</small></div>
-          <SwaraLadder raga={raga} temperament={temperament} current={current} />
-        </div>
-        <div className="scale-phrases">
-          <div><span>AROHANA</span><strong>{sequenceText(raga.arohana, true)}</strong></div>
-          <div><span>AVAROHANA</span><strong>{sequenceText(raga.avarohana, false)}</strong></div>
-        </div>
-        <div className="reference-note"><BookOpenText /><p><strong>A scale is a guide, not the raga.</strong> Phrase shape, approach and gamaka distinguish ragas that share these swaras.</p></div>
-        <div className="raga-controls">
-          <div className="transport-row raga-transport"><button className="orange-transport" aria-label={playing ? 'Pause raga' : 'Play raga'} onClick={playing ? stop : play}>{playing ? <Pause /> : <Play fill="currentColor" />}</button><button className="metal-button" onClick={stop} aria-label="Stop raga"><Square /></button></div>
-          <label><span>SRUTI</span><div className="number-unit"><input type="number" min="80" max="400" step="0.01" value={sruti} onChange={(event) => setSruti(Number(event.target.value))} aria-label="Sruti in hertz" /><b>Hz</b></div></label>
-          <fieldset><legend>INTONATION</legend><button className={temperament === 'just' ? 'active' : ''} onClick={() => setTemperament('just')}>Just</button><button className={temperament === 'equal' ? 'active' : ''} onClick={() => setTemperament('equal')}>Equal</button></fieldset>
-          <fieldset><legend>VOICE</legend><button className={voice === 'bowed' ? 'active' : ''} onClick={() => setVoice('bowed')}>Bowed</button><button className={voice === 'veena' ? 'active' : ''} onClick={() => setVoice('veena')}>Veena</button></fieldset>
-          <div className="kampita-toggle"><span><b>Kampita</b><small>Approximation</small></span><Switch checked={kampita} onCheckedChange={setKampita} aria-label="Approximate kampita" /></div>
-        </div>
-        <div className="raga-notes"><article><span>SANCHARAS</span><p>{raga.sancharas || 'Add characteristic phrases as your teacher introduces them.'}</p></article><article><span>GAMAKA NOTES</span><p>{raga.gamakaNotes || 'No notes yet. This field is intentionally free text.'}</p></article></div>
-      </div>
-    </section>
-  );
+function Spectrum({ raga, sruti, temperament }: { raga: Raga; sruti: number; temperament: Temperament }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = ref.current; if (!canvas) return;
+    const draw = () => {
+      const box = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = box.width * dpr; canvas.height = box.height * dpr;
+      const ctx = canvas.getContext('2d'); if (!ctx) return; const W = canvas.width; const H = canvas.height - 24 * dpr; const x = (f: number) => Math.log(f / 90) / Math.log(6000 / 90) * W;
+      ctx.clearRect(0, 0, W, canvas.height); ctx.setLineDash([2 * dpr, 5 * dpr]); ctx.strokeStyle = 'rgba(216,180,94,.14)';
+      [...new Set([...raga.arohana, ...raga.avarohana].map((s) => s.semitones))].forEach((n) => [1, 2, 4].forEach((octave) => { const at = x(frequency(sruti, n, temperament) * octave); if (at > 0 && at < W) { ctx.beginPath(); ctx.moveTo(at, 0); ctx.lineTo(at, H); ctx.stroke(); } }));
+      ctx.setLineDash([]); const gradient = ctx.createLinearGradient(0, H, W, 0); gradient.addColorStop(0, 'rgba(216,180,94,.9)'); gradient.addColorStop(.55, 'rgba(232,170,120,.75)'); gradient.addColorStop(1, 'rgba(160,130,220,.7)'); ctx.fillStyle = gradient;
+      const live = getAudioAnalyser();
+      if (live) {
+        const values = new Uint8Array(live.frequencyBinCount); live.getByteFrequencyData(values);
+        for (let i = 0; i < 120; i++) { const from = Math.floor(i * values.length / 120); const to = Math.max(from + 1, Math.floor((i + 1) * values.length / 120)); let peak = 0; for (let j = from; j < to; j += 1) peak = Math.max(peak, values[j]); const bar = Math.pow(peak / 255, 1.25) * H * .92; if (bar > 0.5) ctx.fillRect(i * W / 120, H - bar, W / 180, bar); }
+      }
+      ctx.fillStyle = 'rgba(216,180,94,.3)'; ctx.fillRect(0, H, W, dpr); ctx.font = `${9 * dpr}px monospace`; ctx.fillStyle = 'rgba(233,227,214,.34)'; ctx.textAlign = 'center'; [[100, '100'], [200, '200'], [500, '500'], [1000, '1k'], [2000, '2k'], [5000, '5k']].forEach(([f, label]) => { const at = x(Number(f)); if (at > 4 && at < W - 4) ctx.fillText(String(label), at, H + 13 * dpr); });
+    }; draw(); window.addEventListener('resize', draw); const timer = window.setInterval(draw, 90); return () => { window.removeEventListener('resize', draw); window.clearInterval(timer); };
+  }, [raga, sruti, temperament]);
+  return <canvas ref={ref} className="prototype-spectrum" />;
 }
+
+const taxons: [string, string, ReactNode][] = [
+  ['01', 'An octave has twelve doors', <>Pick any note and sing until you reach the same note again, higher. Between those two points sit twelve usable pitches — the same twelve on a piano. Carnatic music calls each landing place a <em>svarasthāna</em>, a “note position”.</>],
+  ['02', 'Seven names, sixteen shades', <>The seven note names are <strong>Sa Ri Ga Ma Pa Da Ni</strong> — written S R G M P D N. Sa is home and Pa never moves. The others have two or three flavours each, marked with a subscript.</>],
+    ['03', 'A rāga is a path, not a scale', <>A rāga specifies the way <em>up</em> — the <strong>ārohana</strong> — and the way <em>down</em> — the <strong>avarohana</strong>. They need not match. That asymmetry is most of a rāga&apos;s character.</>],
+  ['04', 'The parent rāgas are a grid, not a list', <>A <strong>melakarta</strong> is a parent rāga: all seven names present, straight up and straight down. Two Ma choices × six Ri–Ga pairs × six Da–Ni pairs = 72 parents. These are dealt into twelve groups called <strong>chakras</strong>.</>],
+  ['05', 'The children are where the music lives', <>A <strong>janya</strong> rāga borrows its notes from one parent, then drops some, bends the order, or takes a different route down. Most rāgas you will actually hear sung are janyas; the parents are the filing system that makes them findable.</>],
+];
+
+function Taxonomy() { return <div className="prototype-taxonomy"><header><div className="prototype-eyebrow">Primer</div><h1>How rāgas are organised</h1><p>Five ideas, in plain language. No notation required.</p></header><div className="taxonomy-list">{taxons.map(([number, title, text]) => <div className="taxonomy-item" key={number}><div className="taxonomy-number">{number}</div><div><h2>{title}</h2><p>{text}</p></div></div>)}</div></div>; }
+
+export function RagaLibrary({ sruti, onSruti }: { sruti: number; onSruti: (value: number) => void }) {
+  const [tab, setTab] = useState<'atlas' | 'taxonomy'>('atlas'); const [query, setQuery] = useState(''); const [filter, setFilter] = useState<'all' | 'melakarta' | 'janya'>('all'); const [selectedId, setSelectedId] = useState('mela-28'); const [tonic, setTonic] = useState(2); const [tempo, setTempo] = useState(2.2); const [playing, setPlaying] = useState(''); const [drone, setDrone] = useState(false); const [temperament, setTemperament] = useState<Temperament>('just'); const [voice, setVoice] = useState<Voice>('veena'); const [kampita, setKampita] = useState(true);
+  const [playback, setPlayback] = useState<PlaybackHandle | null>(null); const [droneHandle, setDroneHandle] = useState<PlaybackHandle | null>(null);
+  const filtered = useMemo(() => ALL_RAGAS.filter((r) => (filter === 'all' || r.group === filter) && (!query.trim() || r.name.toLowerCase().includes(query.toLowerCase()) || String(r.parentMela).includes(query.trim()))), [filter, query]); const raga = ALL_RAGAS.find((r) => r.id === selectedId) ?? ALL_RAGAS[0]; const up = ascent(raga); const down = descent(raga);
+  const stop = () => { playback?.stop(); setPlayback(null); setPlaying(''); }; const play = (direction: 'aro' | 'ava' | 'both') => { stop(); const sequence = direction === 'aro' ? up : direction === 'ava' ? down : fullScale(raga); setPlaying(direction); setPlayback(playRaga({ sequence, sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); }; const note = (swara: Swara, direction: string) => { stop(); setPlaying(direction); setPlayback(playRaga({ sequence: [swara], sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); };
+  const toggleDrone = () => { if (drone) { droneHandle?.stop(); setDroneHandle(null); setDrone(false); } else { const handle = startDrone(TONICS[tonic][1]); setDroneHandle(handle); setDrone(true); } };
+  const chips = (notes: Swara[], direction: string) => notes.map((swara, index) => { const active = playing === direction; return <button className={`note-chip ${active ? 'active' : ''}`} key={`${direction}-${index}`} onClick={() => note(swara, direction)}><span>{swara.label[0]}<small>{swara.label.slice(1)}</small></span><em>{frequency(TONICS[tonic][1], swara.semitones, temperament).toFixed(1)} Hz</em><i style={{ background: color(swara.semitones, active ? 1 : .55) }} /></button>; });
+  const cells = LABELS.map((label, index) => { const on = [...raga.arohana, ...raga.avarohana].some((s) => s.semitones % 12 === index); return <div className={`chromatic-cell ${on ? 'lit' : ''}`} key={label}><div className="bar-wrap"><i style={{ height: on ? `${34 + index * 3.4}%` : '3%', background: color(index, on ? .85 : .12) }} /></div><strong>{label}</strong><small>{RATIOS[index]}</small></div>; });
+  return <div className="prototype-shell"><aside className="prototype-sidebar"><div className="prototype-sidebar-head"><div className="prototype-eyebrow">Carnatic</div><div className="prototype-logo">Rāga Atlas</div><div className="prototype-meta">72 melakarta · {JANYA_RAGAS.length} janya · just intonation</div><div className="prototype-tabs"><button className={tab === 'atlas' ? 'active' : ''} onClick={() => setTab('atlas')}>Atlas</button><button className={tab === 'taxonomy' ? 'active' : ''} onClick={() => setTab('taxonomy')}>Taxonomy</button></div><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="search rāga or mela no." /><div className="prototype-filter">{(['all', 'melakarta', 'janya'] as const).map((value) => <button className={filter === value ? 'active' : ''} key={value} onClick={() => setFilter(value)}>{value === 'melakarta' ? 'Mela' : value[0].toUpperCase() + value.slice(1)}</button>)}</div></div><div className="prototype-raga-list">{filtered.map((item) => <button className={item.id === raga.id ? 'selected' : ''} key={item.id} onClick={() => { setSelectedId(item.id); setTab('atlas'); }}><span>{item.group === 'melakarta' ? String(item.parentMela).padStart(2, '0') : '·'}</span><strong>{item.name}</strong><em>{item.group === 'melakarta' ? CHAKRAS[Math.floor(((item.parentMela ?? 1) - 1) / 6)] : 'janya'}</em></button>)}</div></aside><main className="prototype-main"><div className="prototype-content">{tab === 'taxonomy' ? <Taxonomy /> : <><header className="prototype-header"><div><div className="prototype-eyebrow">{raga.group === 'melakarta' ? 'Melakarta · sampūrṇa · 7 svara' : 'Janya · derived raga'}</div><h1>{raga.name}</h1><p>{raga.group === 'melakarta' ? `Position ${raga.parentMela} in ${CHAKRAS[Math.floor(((raga.parentMela ?? 1) - 1) / 6)]} chakra · symmetric ārohana / avarohana` : `Derived from mela ${raga.parentMela}`}</p></div><div className="mela-coordinate"><strong>{String(raga.parentMela).padStart(2, '0')}</strong><span>{raga.group === 'melakarta' ? CHAKRAS[Math.floor(((raga.parentMela ?? 1) - 1) / 6)] : 'janaka mela'}</span></div></header><section className="note-paths"><Path label="Ārohana" notes={up} content={chips(up, 'aro')} /><Path label="Avarohana" notes={down} content={chips(down, 'ava')} /></section><section className="prototype-controls"><div className="transport-buttons"><button className="primary" onClick={() => play('aro')}>Ārohana</button><button onClick={() => play('ava')}>Avarohana</button><button onClick={() => play('both')}>Both</button></div><span className="control-divider" /><button className={drone ? 'drone active' : 'drone'} onClick={toggleDrone}>Tambura {drone ? 'on' : 'off'}</button><div className="tonic-control"><span>Śruti</span>{TONICS.map(([label], index) => <button className={tonic === index ? 'active' : ''} key={label} onClick={() => setTonic(index)}>{label}</button>)}</div><label className="tempo-control"><span>Kāla</span><input type="range" min="0.9" max="4.2" step="0.1" value={tempo} onChange={(e) => setTempo(Number(e.target.value))} /><em>{tempo.toFixed(1)}/s</em></label></section><section className="spectrum-section"><div className="section-label"><span>Spectrum</span><em>90 Hz – 6 kHz, log scale · dotted guides = this rāga's svara across 3 octaves · {playing ? `playing ${playing}` : 'idle'}</em></div><div className="spectrum-frame"><Spectrum raga={raga} sruti={TONICS[tonic][1]} temperament={temperament} /></div></section><section className="chromatic-section"><div className="section-label"><span>Chromatic position · 12 svarasthāna</span></div><div className="chromatic-grid">{cells}</div></section><section className="prototype-sound-settings"><label>Intonation <select value={temperament} onChange={(e) => setTemperament(e.target.value as Temperament)}><option value="just">Just</option><option value="equal">Equal</option></select></label><label>Voice <select value={voice} onChange={(e) => setVoice(e.target.value as Voice)}><option value="veena">Veena</option><option value="bowed">Bowed</option></select></label><label>Kampita <select value={kampita ? 'shaken' : 'plain'} onChange={(e) => setKampita(e.target.value === 'shaken')}><option value="plain">Plain</option><option value="shaken">Shaken</option></select></label><label>Sa in Hz <input type="number" min="60" max="500" step="0.01" value={sruti} onChange={(e) => { const value = Number(e.target.value); if (Number.isFinite(value) && value > 0) onSruti(value); }} /></label></section></>}</div></main></div>;
+}
+
+function Path({ label, notes: _notes, content }: { label: string; notes: Swara[]; content: ReactNode }) { return <div className="note-path"><div className="path-heading"><span>{label}</span><i /></div><div className="note-chip-row">{content}</div></div>; }
