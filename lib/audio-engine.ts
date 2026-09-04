@@ -1,6 +1,6 @@
 import { centsFor, type Swara } from './ragas';
 
-export type Voice = 'bowed' | 'veena';
+export type Voice = 'veena' | 'chitravina' | 'swarmandal';
 export type Temperament = 'just' | 'equal';
 export type PlaybackHandle = { stop: () => void };
 
@@ -52,22 +52,30 @@ function wetAndDry(ctx: AudioContext, source: AudioNode, output: GainNode, wet =
   source.connect(output); const send = ctx.createGain(); send.gain.value = wet; source.connect(send); send.connect(impulse(ctx));
 }
 
-function scheduleBowed(ctx: AudioContext, frequency: number, previous: number, start: number, duration: number, output: GainNode, kampita: boolean, fixed: boolean) {
-  const osc = ctx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(Math.max(1, previous), start); osc.frequency.exponentialRampToValueAtTime(frequency, start + .09);
-  const amplitude = ctx.createGain(); amplitude.gain.setValueAtTime(.0001, start); amplitude.gain.exponentialRampToValueAtTime(.13, start + .13); amplitude.gain.setValueAtTime(.13, start + duration - .09); amplitude.gain.exponentialRampToValueAtTime(.0001, start + duration);
-  const vibrato = ctx.createOscillator(); const vibratoGain = ctx.createGain(); vibrato.frequency.value = 5.9; vibratoGain.gain.setValueAtTime(0, start); vibratoGain.gain.linearRampToValueAtTime(kampita && !fixed ? 45 : 14, start + duration * .4); vibrato.connect(vibratoGain); vibratoGain.connect(osc.detune);
-  const mix = ctx.createGain(); const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 4600; const lowGain = ctx.createGain(); lowGain.gain.value = .45; osc.connect(lowpass); lowpass.connect(lowGain); lowGain.connect(mix);
-  [[320,4,1],[620,6,.62],[1180,7,.34],[2400,5,.18]].forEach(([freq,q,gain]) => { const filter = ctx.createBiquadFilter(); const g = ctx.createGain(); filter.type = 'bandpass'; filter.frequency.value = freq; filter.Q.value = q; g.gain.value = gain; osc.connect(filter); filter.connect(g); g.connect(mix); });
-  const noiseBuffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * .28), ctx.sampleRate); const noiseData = noiseBuffer.getChannelData(0); for (let i = 0; i < noiseData.length; i++) noiseData[i] = Math.random() * 2 - 1;
-  const noise = ctx.createBufferSource(); noise.buffer = noiseBuffer; const noiseFilter = ctx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 2600; noiseFilter.Q.value = 2; const noiseGain = ctx.createGain(); noiseGain.gain.setValueAtTime(.045, start); noiseGain.gain.exponentialRampToValueAtTime(.0001, start + .24); noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(mix);
-  wetAndDry(ctx, mix, amplitude); amplitude.connect(output); osc.start(start); vibrato.start(start); noise.start(start); osc.stop(start + duration); vibrato.stop(start + duration); noise.stop(start + .28);
-}
-
 function scheduleVeena(ctx: AudioContext, frequency: number, start: number, duration: number, output: GainNode) {
   const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, Math.max(3.4, duration + .5)); const peak = ctx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 440; peak.Q.value = 2.2; peak.gain.value = 5; const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 5200;
   // A plucked string is damped, not cut: let it ring to the beat, then fade.
   const release = .22; const gain = ctx.createGain(); gain.gain.setValueAtTime(.5, start); gain.gain.setValueAtTime(.5, start + duration); gain.gain.exponentialRampToValueAtTime(.0001, start + duration + release);
   source.connect(peak); peak.connect(lowpass); wetAndDry(ctx, lowpass, gain); gain.connect(output); source.start(start); source.stop(start + duration + release);
+}
+
+function scheduleChitravina(ctx: AudioContext, frequency: number, previous: number, start: number, duration: number, output: GainNode, kampita: boolean, fixed: boolean) {
+  // Fretless slide string: one pluck, then the pitch is carried into place by the slide rather than re-attacked.
+  const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, Math.max(3.4, duration + .6));
+  const glide = 1200 * Math.log2(Math.max(1, previous) / frequency); source.detune.setValueAtTime(glide, start); source.detune.linearRampToValueAtTime(0, start + Math.min(.16, duration * .35));
+  const vibrato = ctx.createOscillator(); const vibratoGain = ctx.createGain(); vibrato.frequency.value = 5.4; vibratoGain.gain.setValueAtTime(0, start); vibratoGain.gain.linearRampToValueAtTime(kampita && !fixed ? 38 : 0, start + duration * .5); vibrato.connect(vibratoGain); vibratoGain.connect(source.detune);
+  const body = ctx.createBiquadFilter(); body.type = 'peaking'; body.frequency.value = 300; body.Q.value = 1.6; body.gain.value = 4; const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 3400;
+  const release = .3; const gain = ctx.createGain(); gain.gain.setValueAtTime(.5, start); gain.gain.setValueAtTime(.5, start + duration); gain.gain.exponentialRampToValueAtTime(.0001, start + duration + release);
+  source.connect(body); body.connect(lowpass); wetAndDry(ctx, lowpass, gain, .4); gain.connect(output); vibrato.start(start); vibrato.stop(start + duration + release); source.start(start); source.stop(start + duration + release);
+}
+
+function scheduleSwarmandal(ctx: AudioContext, frequency: number, start: number, duration: number, output: GainNode) {
+  // Open harp strings: bright fundamental with a quiet octave shimmer, damped short so runs stay legible.
+  const mix = ctx.createGain();
+  [[frequency, .5], [frequency * 2, .16]].forEach(([hz, level]) => { const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, hz, Math.max(3.4, duration + .5)); const amp = ctx.createGain(); amp.gain.value = level; source.connect(amp); amp.connect(mix); source.start(start); source.stop(start + duration + .34); });
+  const highpass = ctx.createBiquadFilter(); highpass.type = 'highpass'; highpass.frequency.value = 180; const lowpass = ctx.createBiquadFilter(); lowpass.type = 'lowpass'; lowpass.frequency.value = 7200;
+  const release = .32; const gain = ctx.createGain(); gain.gain.setValueAtTime(.5, start); gain.gain.setValueAtTime(.5, start + duration * .8); gain.gain.exponentialRampToValueAtTime(.0001, start + duration + release);
+  mix.connect(highpass); highpass.connect(lowpass); wetAndDry(ctx, lowpass, gain, .28); gain.connect(output);
 }
 
 export function playRaga(options: { sequence: Swara[]; sruti: number; temperament: Temperament; voice?: Voice; kampita: boolean; tempo?: number; onSwara: (swara: Swara | null, index: number) => void }): PlaybackHandle {
@@ -77,7 +85,7 @@ export function playRaga(options: { sequence: Swara[]; sruti: number; temperamen
   const starts: number[] = []; let cursor = ctx.currentTime + .08;
   for (let index = 0; index < schedule.length; index++) { starts.push(cursor); cursor += lengthOf(index); }
   const finish = cursor + .25;
-  schedule.forEach((swara, index) => { const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.semitones % 12 === 0 || swara.semitones === 7; if (voice === 'bowed') scheduleBowed(ctx, frequency, prev, starts[index], lengthOf(index), output, options.kampita, fixed); else scheduleVeena(ctx, frequency, starts[index], lengthOf(index), output); });
+  schedule.forEach((swara, index) => { const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.semitones % 12 === 0 || swara.semitones === 7; if (voice === 'chitravina') scheduleChitravina(ctx, frequency, prev, starts[index], lengthOf(index), output, options.kampita, fixed); else if (voice === 'swarmandal') scheduleSwarmandal(ctx, frequency, starts[index], lengthOf(index), output); else scheduleVeena(ctx, frequency, starts[index], lengthOf(index), output); });
   let raf = 0; const tick = () => { const now = ctx.currentTime; let at = -1; for (let index = 0; index < schedule.length; index++) if (now >= starts[index] && now < starts[index] + lengthOf(index)) at = index; options.onSwara(at < 0 ? null : schedule[at], at); if (now < finish) raf = requestAnimationFrame(tick); else options.onSwara(null, -1); }; raf = requestAnimationFrame(tick);
   return { stop: () => { cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null, -1); } };
 }
