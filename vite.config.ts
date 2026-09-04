@@ -4,6 +4,9 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // GitHub Pages serves the site from a subpath; the deploy workflow sets
+  // BASE_PATH so the built asset URLs carry it. Local builds stay at root.
+  base: process.env.BASE_PATH ?? '/',
   css: {
     postcss: {
       plugins: [tailwindcss()],
