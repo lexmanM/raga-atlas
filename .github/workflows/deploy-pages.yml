@@ -30,7 +30,12 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # Not `npm ci`. rolldown and @tailwindcss/oxide declare optional
+        # wasm32-wasi bindings whose own dependencies npm only expands when
+        # the lock file is generated on Linux, so `npm ci` rejects a lock
+        # file that is in fact correct. Every direct dependency is pinned to
+        # an exact version, so the build stays reproducible.
+        run: npm install --no-audit --no-fund
 
       - name: Build
         env:
