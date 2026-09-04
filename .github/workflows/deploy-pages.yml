@@ -1,0 +1,64 @@
+name: Deploy to GitHub Pages
+
+# Builds the static site and publishes it to the `gh-pages` branch, which
+# GitHub Pages serves at https://lexmanm.github.io/raga-atlas/.
+# Nothing here is required to build or run Raga Atlas locally.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          BASE_PATH: /raga-atlas/
+        run: npm run build
+
+      - name: Publish to the gh-pages branch
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          # Pages serves the directory as-is, without Jekyll preprocessing.
+          touch dist/.nojekyll
+          # Single document app: unknown paths fall back to the same page.
+          cp dist/index.html dist/404.html
+          mv dist "${RUNNER_TEMP}/site"
+
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git rm -rq . --ignore-unmatch
+          cp -R "${RUNNER_TEMP}/site/." .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Site output is unchanged; nothing to publish."
+            exit 0
+          fi
+          git commit -m "Publish site from ${GITHUB_SHA}"
+          git push origin gh-pages
