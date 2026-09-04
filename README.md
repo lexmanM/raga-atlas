@@ -41,6 +41,27 @@ may require a user gesture so the browser can resume its audio context.
 - **Śruti**, **Kāla**, **Tambura**, **Intonation**, **Voice**, and **Kampita**
   adjust playback and visualization behavior.
 
+## Hosting
+
+The public build lives at <https://lexmanm.github.io/raga-atlas/>.
+
+Rāga Atlas is a static site with no backend, so any static host works. Pushing
+to `main` runs [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml),
+which builds the site and publishes it to the `gh-pages` branch that GitHub
+Pages serves.
+
+Hosts that serve the site from a subpath need that subpath as `BASE_PATH` at
+build time:
+
+```bash
+BASE_PATH=/raga-atlas/ npm run build
+```
+
+Hosts that serve from the root of a domain (Netlify, Cloudflare Pages, a plain
+web server, or a GitHub Pages custom domain) need no setting; the default base
+is `/`. In every case the deployable output is the `dist/` directory, with the
+build command `npm run build`.
+
 ## Development policy
 
 Rāga Atlas is agent agnostic. Its build, runtime, tests, and documentation work
