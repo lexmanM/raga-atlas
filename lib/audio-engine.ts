@@ -9,8 +9,18 @@ let reverb: ConvolverNode | null = null;
 let analyser: AnalyserNode | null = null;
 const stringBuffers = new Map<string, AudioBuffer>();
 
+// WebKit runs Web Audio through the ambient audio session, which the ring/silent
+// switch mutes, so an iPhone on silent plays nothing while the page looks fine.
+// Asking for the playback session opts into sounding like a media player.
+// Safari 16.4+; absent elsewhere, where the switch does not apply anyway.
+type AudioSessionNavigator = Navigator & { audioSession?: { type: string } };
+
 const getContext = () => {
-  context ??= new AudioContext({ sampleRate: 48000 });
+  const { audioSession } = navigator as AudioSessionNavigator;
+  if (audioSession) audioSession.type = 'playback';
+  // No forced sample rate: iOS resamples the whole graph when it disagrees with
+  // the hardware. Every buffer below is built from ctx.sampleRate regardless.
+  context ??= new AudioContext();
   if (!analyser) {
     analyser = context.createAnalyser();
     analyser.fftSize = 4096;
