@@ -48,16 +48,17 @@ function Taxonomy() { return <div className="prototype-taxonomy"><header><div cl
 // typing narrows the list identically on desktop and mobile.
 function RagaPicker({ ragas, selected, onSelect }: { ragas: Raga[]; selected: Raga; onSelect: (id: string) => void }) {
   const [query, setQuery] = useState(''); const [open, setOpen] = useState(false); const [highlight, setHighlight] = useState(0);
-  const wrap = useRef<HTMLDivElement>(null); const field = useRef<HTMLInputElement>(null); const list = useRef<HTMLDivElement>(null);
+  const viaKey = useRef(false); const wrap = useRef<HTMLDivElement>(null); const field = useRef<HTMLInputElement>(null); const list = useRef<HTMLDivElement>(null);
   const term = query.trim().toLowerCase();
   const matches = useMemo(() => ragas.filter((item) => !term || item.name.toLowerCase().includes(term) || String(item.parentMela).includes(term)), [ragas, term]);
   const label = (item: Raga) => item.group === 'melakarta' ? `${item.name} · ${String(item.parentMela).padStart(2, '0')}` : item.name;
   useEffect(() => { if (!open) return; const away = (event: PointerEvent) => { if (!wrap.current?.contains(event.target as Node)) setOpen(false); }; document.addEventListener('pointerdown', away); return () => document.removeEventListener('pointerdown', away); }, [open]);
-  // Arrowing through 90 ragas has to drag the list along with it.
-  useEffect(() => { if (open) (list.current?.children[highlight] as HTMLElement | undefined)?.scrollIntoView({ block: 'nearest' }); }, [open, highlight]);
+  // Arrowing through 90 ragas has to drag the list along, but only for the keyboard:
+  // doing it on hover would fight the pointer while the reader scrolls.
+  useEffect(() => { if (!open || !viaKey.current) return; viaKey.current = false; (list.current?.children[highlight] as HTMLElement | undefined)?.scrollIntoView({ block: 'nearest' }); }, [open, highlight]);
   const choose = (item: Raga | undefined) => { if (!item) return; onSelect(item.id); setOpen(false); setQuery(''); field.current?.blur(); };
   const keys = (event: ReactKeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); if (!open) { setOpen(true); return; } setHighlight((at) => Math.max(0, Math.min(matches.length - 1, at + (event.key === 'ArrowDown' ? 1 : -1)))); }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); if (!open) { setOpen(true); return; } viaKey.current = true; setHighlight((at) => Math.max(0, Math.min(matches.length - 1, at + (event.key === 'ArrowDown' ? 1 : -1)))); }
     else if (event.key === 'Enter') { event.preventDefault(); choose(matches[highlight]); }
     else if (event.key === 'Escape') { setOpen(false); setQuery(''); }
   };
@@ -66,7 +67,7 @@ function RagaPicker({ ragas, selected, onSelect }: { ragas: Raga[]; selected: Ra
        that is the ARIA combobox pattern. The rules below want a native select, which is the one thing
        this control cannot be, since a select cannot contain the text field it exists to provide. */}
     {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role, jsx-a11y/click-events-have-key-events */}
-    {open && <div className="raga-options" id="raga-options" ref={list} role="listbox" tabIndex={-1} onMouseDown={(event) => event.preventDefault()}>{matches.map((item, index) => <div aria-selected={item.id === selected.id} className={index === highlight ? 'active' : ''} id={`raga-option-${index}`} key={item.id} onClick={() => choose(item)} onMouseEnter={() => setHighlight(index)} role="option" tabIndex={-1}><span>{item.group === 'melakarta' ? String(item.parentMela).padStart(2, '0') : '·'}</span><strong>{item.name}</strong><em>{item.group === 'melakarta' ? CHAKRAS[Math.floor(((item.parentMela ?? 1) - 1) / 6)] : 'janya'}</em></div>)}{matches.length === 0 && <div className="empty">no matches</div>}</div>}
+    {open && <div className="raga-options" id="raga-options" ref={list} role="listbox" tabIndex={-1}>{matches.map((item, index) => <div aria-selected={item.id === selected.id} className={index === highlight ? 'active' : ''} id={`raga-option-${index}`} key={item.id} onClick={() => choose(item)} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setHighlight(index)} role="option" tabIndex={-1}><span>{item.group === 'melakarta' ? String(item.parentMela).padStart(2, '0') : '·'}</span><strong>{item.name}</strong><em>{item.group === 'melakarta' ? CHAKRAS[Math.floor(((item.parentMela ?? 1) - 1) / 6)] : 'janya'}</em></div>)}{matches.length === 0 && <div className="empty">no matches</div>}</div>}
   </div>;
 }
 

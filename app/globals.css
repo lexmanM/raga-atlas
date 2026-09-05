@@ -2042,7 +2042,7 @@ body { font-family: 'IBM Plex Mono', 'SF Mono', monospace; background-image: rad
 .raga-field { width: 258px; padding: 10px 12px; border: 1px solid rgba(216,180,94,.3); border-radius: 2px; outline: 0; background: rgba(255,255,255,.03); color: var(--prototype-text); font: inherit; font-size: 13px; letter-spacing: .03em; }
 .raga-field:focus { border-color: rgba(216,180,94,.55); background: rgba(255,255,255,.05); }
 .raga-field::placeholder { color: rgba(233,227,214,.34); }
-.raga-options { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0; max-height: 328px; margin: 0; padding: 6px; overflow-y: auto; list-style: none; border: 1px solid rgba(216,180,94,.24); border-radius: 10px; background: #0c0b12; box-shadow: 0 18px 44px rgba(0,0,0,.6); scrollbar-width: thin; scrollbar-color: rgba(216,180,94,.18) transparent; }
+.raga-options { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0; max-height: 328px; margin: 0; padding: 6px; overflow-y: auto; overscroll-behavior: contain; list-style: none; border: 1px solid rgba(216,180,94,.24); border-radius: 10px; background: #0c0b12; box-shadow: 0 18px 44px rgba(0,0,0,.6); scrollbar-width: thin; scrollbar-color: rgba(216,180,94,.18) transparent; }
 .raga-options [role='option'] { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
 .raga-options [role='option'].active { background: rgba(216,180,94,.12); }
 .raga-options [aria-selected='true'] strong { color: #f4e6c2; }
@@ -2063,7 +2063,10 @@ body { font-family: 'IBM Plex Mono', 'SF Mono', monospace; background-image: rad
    the low Tambura glow. Tambura itself remains opt-in in the React app. */
 .prototype-shell { position: relative; isolation: isolate; }
 .prototype-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(120% 95% at 50% 118%, rgba(216,180,94,.16), rgba(190,120,90,.07) 34%, rgba(120,90,190,.04) 58%, transparent 78%); opacity: .3; }
-.prototype-topbar, .prototype-main { position: relative; z-index: 1; }
+.prototype-main { position: relative; z-index: 1; }
+/* Above .prototype-main, not level with it: the bar carries the raga picker's
+   floating result list, and an equal z-index lets the later sibling take the clicks. */
+.prototype-topbar { position: relative; z-index: 5; }
 .prototype-topbar { background: linear-gradient(180deg, rgba(14,12,20,.78), rgba(8,7,12,.45)); }
 .prototype-filter, .raga-field, .note-chip, .prototype-controls, .prototype-controls button, .spectrum-frame, .chromatic-cell, .prototype-sound-settings select, .prototype-sound-settings input { border-radius: 10px; }
 
