@@ -1,8 +1,8 @@
 /* oxlint-disable react/no-unescaped-entities, react(react-compiler) */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 
-import { ALL_RAGAS, ascent, descent, fullScale, JANYA_RAGAS, type Raga, type Swara } from '@/lib/ragas';
-import { getAudioAnalyser, playRaga, startDrone, type PlaybackHandle, type Temperament, type Voice } from '@/lib/audio-engine';
+import { ALL_RAGAS, ascent, centsFor, descent, fullScale, JANYA_RAGAS, type Raga, type Swara } from '@/lib/ragas';
+import { getAudioAnalyser, playRaga, playSustainedNote, startDrone, type PlaybackHandle, type Temperament, type Voice } from '@/lib/audio-engine';
 
 const RATIOS = ['1/1', '16/15', '9/8', '6/5', '5/4', '4/3', '45/32', '3/2', '8/5', '5/3', '9/5', '15/8'];
 const LABELS = ['S', 'R₁', 'R₂ G₁', 'R₃ G₂', 'G₃', 'M₁', 'M₂', 'P', 'D₁', 'D₂ N₁', 'D₃ N₂', 'N₃'];
@@ -72,10 +72,36 @@ function RagaPicker({ ragas, selected, onSelect }: { ragas: Raga[]; selected: Ra
 }
 
 export function RagaLibrary({ sruti, onSruti }: { sruti: number; onSruti: (value: number) => void }) {
-  const [tab, setTab] = useState<'atlas' | 'taxonomy'>('atlas'); const [filter, setFilter] = useState<'all' | 'melakarta' | 'janya'>('all'); const [selectedId, setSelectedId] = useState('mela-28'); const [tonic, setTonic] = useState(2); const [tempo, setTempo] = useState(2.2); const [playing, setPlaying] = useState(''); const [drone, setDrone] = useState(false); const [temperament, setTemperament] = useState<Temperament>('just'); const [voice, setVoice] = useState<Voice>('veena'); const [kampita, setKampita] = useState(true);
+  const [tab, setTab] = useState<'atlas' | 'taxonomy'>('atlas'); const [filter, setFilter] = useState<'all' | 'melakarta' | 'janya'>('all'); const [selectedId, setSelectedId] = useState('mela-28'); const [tonic, setTonic] = useState(2); const [tempo, setTempo] = useState(2.2); const [playing, setPlaying] = useState(''); const [drone, setDrone] = useState(false); const [temperament, setTemperament] = useState<Temperament>('just'); const [voice, setVoice] = useState<Voice>('veena'); const [kampita, setKampita] = useState(true); const [octaveOffset, setOctaveOffset] = useState(0);
   const [playback, setPlayback] = useState<PlaybackHandle | null>(null); const [droneHandle, setDroneHandle] = useState<PlaybackHandle | null>(null);
+  const keyboardNotesRef = useRef<Map<string, PlaybackHandle>>(new Map());
   const filtered = useMemo(() => ALL_RAGAS.filter((r) => filter === 'all' || r.group === filter), [filter]); const raga = ALL_RAGAS.find((r) => r.id === selectedId) ?? ALL_RAGAS[0]; const up = ascent(raga); const down = descent(raga);
-  const stop = () => { playback?.stop(); setPlayback(null); setPlaying(''); }; const play = (direction: 'aro' | 'ava' | 'both') => { stop(); const sequence = direction === 'aro' ? up : direction === 'ava' ? down : fullScale(raga); setPlaying(direction); setPlayback(playRaga({ sequence, sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); }; const note = (swara: Swara, direction: string) => { stop(); setPlaying(direction); setPlayback(playRaga({ sequence: [swara], sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); };
+  const stop = () => { playback?.stop(); setPlayback(null); setPlaying(''); };
+  useEffect(() => {
+    const keyMap: { [key: string]: number } = { 'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6 };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp') { e.preventDefault(); setOctaveOffset((o) => o + 1); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); setOctaveOffset((o) => Math.max(-2, o - 1)); return; }
+      const index = keyMap[e.key.toLowerCase()];
+      if (index === undefined || index >= up.length) return;
+      if (keyboardNotesRef.current.has(e.key.toLowerCase())) return;
+      const note = up[index];
+      const baseCents = centsFor(note.semitones, temperament);
+      const octaveCents = octaveOffset * 1200;
+      const noteFreq = TONICS[tonic][1] * Math.pow(2, (baseCents + octaveCents) / 1200);
+      const handle = playSustainedNote({ frequency: noteFreq, voice, temperament, sruti: TONICS[tonic][1], kampita });
+      keyboardNotesRef.current.set(e.key.toLowerCase(), handle);
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const keyMap: { [key: string]: number } = { 'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6 };
+      if (!(e.key.toLowerCase() in keyMap)) return;
+      const handle = keyboardNotesRef.current.get(e.key.toLowerCase());
+      if (handle) { handle.stop(); keyboardNotesRef.current.delete(e.key.toLowerCase()); }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => { document.removeEventListener('keydown', handleKeyDown); document.removeEventListener('keyup', handleKeyUp); };
+  }, [temperament, voice, kampita, tonic, up, octaveOffset]); const play = (direction: 'aro' | 'ava' | 'both') => { stop(); const sequence = direction === 'aro' ? up : direction === 'ava' ? down : fullScale(raga); setPlaying(direction); setPlayback(playRaga({ sequence, sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); }; const note = (swara: Swara, direction: string) => { stop(); setPlaying(direction); setPlayback(playRaga({ sequence: [swara], sruti: TONICS[tonic][1], temperament, voice, kampita, tempo, onSwara: (_s, i) => { if (i === -1) setPlaying(''); } })); };
   const toggleDrone = () => { if (drone) { droneHandle?.stop(); setDroneHandle(null); setDrone(false); } else { const handle = startDrone(TONICS[tonic][1]); setDroneHandle(handle); setDrone(true); } };
   const chips = (notes: Swara[], direction: string) => notes.map((swara, index) => { const active = playing === direction; return <button className={`note-chip ${active ? 'active' : ''}`} key={`${direction}-${index}`} onClick={() => note(swara, direction)}><span>{swara.label[0]}<small>{swara.label.slice(1)}</small></span><em>{frequency(TONICS[tonic][1], swara.semitones, temperament).toFixed(1)} Hz</em><i style={{ background: color(swara.semitones, active ? 1 : .55) }} /></button>; });
   const cells = LABELS.map((label, index) => { const on = [...raga.arohana, ...raga.avarohana].some((s) => s.semitones % 12 === index); return <div className={`chromatic-cell ${on ? 'lit' : ''}`} key={label}><div className="bar-wrap"><i style={{ height: on ? `${34 + index * 3.4}%` : '3%', background: color(index, on ? .85 : .12) }} /></div><strong>{label}</strong><small>{RATIOS[index]}</small></div>; });
