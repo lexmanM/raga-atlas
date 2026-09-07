@@ -2744,3 +2744,4 @@ body {
   color: var(--muted);
   border-color: #60443d;
 }
+.guitar-container { padding: 40px 24px; } .fretboard { display: flex; flex-direction: column; gap: 16px; } .string-row { display: flex; align-items: center; gap: 4px; } .string-label { width: 60px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(233,227,214,.5); } .fret { width: 28px; height: 42px; padding: 0; border: 1px solid rgba(216,180,94,.2); border-radius: 2px; background: rgba(255,255,255,.02); color: rgba(216,180,94,.4); font: 10px monospace; cursor: pointer; transition: background .18s, border-color .18s; } .fret:hover { border-color: rgba(216,180,94,.5); background: rgba(216,180,94,.05); } .fret.note { border-color: rgba(212,92,44,.6); background: rgba(212,92,44,.12); color: rgba(212,92,44,.8); font-weight: bold; }
