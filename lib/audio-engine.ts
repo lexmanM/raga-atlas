@@ -105,3 +105,31 @@ export function startDrone(sruti: number): PlaybackHandle {
   for (let i = 0; i < 48; i++) { const frequency = frequencies[i % 4]; const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, 2.6); source.connect(output); source.start(ctx.currentTime + .04 + i * .64); sources.push(source); }
   return { stop: () => { output.gain.setTargetAtTime(0, ctx.currentTime, .03); sources.forEach((source) => { try { source.stop(ctx.currentTime + .2); } catch {} }); } };
 }
+
+export function playSustainedNote(options: { frequency: number; voice?: Voice; temperament?: Temperament; sruti?: number; kampita?: boolean }): PlaybackHandle {
+  const ctx = getContext();
+  const output = ctx.createGain();
+  output.gain.value = .64;
+  output.connect(analyser ?? ctx.destination);
+  const voice = options.voice ?? 'veena';
+  const start = ctx.currentTime;
+  const longDuration = 60; // 60 seconds; interrupted by stop()
+
+  const frequency = options.frequency;
+  const fixed = frequency % 130.81 === 0; // rough check for fixed notes (Sa frequency)
+
+  if (voice === 'chitravina') {
+    scheduleChitravina(ctx, frequency, frequency, start, longDuration, output, options.kampita ?? false, fixed);
+  } else if (voice === 'swarmandal') {
+    scheduleSwarmandal(ctx, frequency, start, longDuration, output);
+  } else {
+    scheduleVeena(ctx, frequency, start, longDuration, output);
+  }
+
+  return {
+    stop: () => {
+      output.gain.cancelScheduledValues(ctx.currentTime);
+      output.gain.setTargetAtTime(0, ctx.currentTime, .12); // fade out over ~350ms
+    }
+  };
+}
