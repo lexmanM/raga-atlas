@@ -81,20 +81,23 @@ export function RagaLibrary({ sruti, onSruti }: { sruti: number; onSruti: (value
     const keyMap: { [key: string]: number } = { 'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6, 'k': 7, 'l': 8, ';': 9, "'": 10 };
     console.log('[Raga Atlas] Keyboard input handlers registered');
     const handleKeyDown = (e: KeyboardEvent) => {
+      console.log('[KB] keydown:', e.key, 'mapped:', keyMap[e.key.toLowerCase()]);
       if (e.key === 'ArrowUp') { e.preventDefault(); setOctaveOffset((o) => o + 1); return; }
       if (e.key === 'ArrowDown') { e.preventDefault(); setOctaveOffset((o) => Math.max(-2, o - 1)); return; }
       const key = e.key.toLowerCase();
       const index = keyMap[key];
-      if (index === undefined) return;
+      if (index === undefined) { console.log('[KB] key not in map'); return; }
       const isShift = e.shiftKey;
       const sequence = isShift ? down : up;
-      if (index >= sequence.length) return;
+      console.log('[KB] sequence length:', sequence.length, 'index:', index, 'shift:', isShift);
+      if (index >= sequence.length) { console.log('[KB] index out of range'); return; }
       const cacheKey = `${isShift ? 'shift+' : ''}${key}`;
-      if (keyboardNotesRef.current.has(cacheKey)) return;
+      if (keyboardNotesRef.current.has(cacheKey)) { console.log('[KB] already playing'); return; }
       const note = sequence[index];
       const baseCents = centsFor(note.semitones, temperament);
       const octaveCents = octaveOffset * 1200;
       const noteFreq = TONICS[tonic][1] * Math.pow(2, (baseCents + octaveCents) / 1200);
+      console.log('[KB] playing note freq:', noteFreq);
       const handle = playSustainedNote({ frequency: noteFreq, voice, temperament, sruti: TONICS[tonic][1], kampita });
       keyboardNotesRef.current.set(cacheKey, handle);
     };
