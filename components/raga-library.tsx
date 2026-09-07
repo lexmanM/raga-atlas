@@ -79,6 +79,7 @@ export function RagaLibrary({ sruti, onSruti }: { sruti: number; onSruti: (value
   const stop = () => { playback?.stop(); setPlayback(null); setPlaying(''); };
   useEffect(() => {
     const keyMap: { [key: string]: number } = { 'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6, 'k': 7, 'l': 8, ';': 9, "'": 10 };
+    console.log('[Raga Atlas] Keyboard input handlers registered');
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowUp') { e.preventDefault(); setOctaveOffset((o) => o + 1); return; }
       if (e.key === 'ArrowDown') { e.preventDefault(); setOctaveOffset((o) => Math.max(-2, o - 1)); return; }
