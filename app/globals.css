@@ -2744,4 +2744,56 @@ body {
   color: var(--muted);
   border-color: #60443d;
 }
+/* Onboarding */
+.onboarding-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.onboarding-card { background: var(--desk-glow); border: 1px solid rgba(216,180,94,.3); border-radius: 8px; padding: 32px; max-width: 500px; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+.onboarding-card h2 { margin: 0 0 16px; color: var(--brass); font-size: 20px; }
+.onboarding-card p { margin: 0 0 16px; color: var(--cream); line-height: 1.6; }
+.onboarding-card ul { list-style: none; padding: 0; margin: 0; }
+.onboarding-card li { padding: 8px 0; color: rgba(216,180,94,.9); }
+.onboarding-card .primary { width: 100%; margin-top: 16px; }
+.close-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: rgba(216,180,94,.6); font-size: 20px; cursor: pointer; padding: 4px; }
+.close-btn:hover { color: rgba(216,180,94,.9); }
+
+/* Help icons */
+.help-icon-wrapper { position: relative; display: inline-block; }
+.help-icon { background: none; border: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(216,180,94,.5); color: rgba(216,180,94,.7); font-size: 11px; font-weight: 600; cursor: help; padding: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; margin-left: 4px; }
+.help-icon:hover { background: rgba(216,180,94,.15); border-color: rgba(216,180,94,.8); color: rgba(216,180,94,.9); }
+.help-tooltip { position: absolute; bottom: calc(100% + 8px); right: 0; background: var(--desk-glow); border: 1px solid rgba(216,180,94,.4); border-radius: 4px; padding: 8px 12px; width: max-content; max-width: 240px; font-size: 12px; color: rgba(216,180,94,.9); z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+.help-tooltip strong { display: block; margin-bottom: 4px; color: var(--brass); font-size: 12px; }
+.help-tooltip p { margin: 0; line-height: 1.4; }
+
+/* Raga picker enhancement */
+.raga-picker-wrapper { display: flex; align-items: center; gap: 12px; flex: 1; }
+.picker-hint { font-size: 12px; color: rgba(216,180,94,.5); white-space: nowrap; }
+.raga-field { border: 2px solid rgba(216,180,94,.3) !important; }
+.raga-field:focus { border-color: rgba(212,92,44,.7) !important; background: rgba(212,92,44,.08) !important; }
+
+/* Advanced settings */
+.advanced-toggle { background: none; border: 1px solid rgba(216,180,94,.3); color: rgba(216,180,94,.8); padding: 8px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; transition: all .2s; width: 100%; text-align: left; margin-bottom: 8px; }
+.advanced-toggle:hover { border-color: rgba(216,180,94,.6); background: rgba(216,180,94,.08); }
+.advanced-toggle[aria-expanded="true"] { border-color: rgba(212,92,44,.5); background: rgba(212,92,44,.1); }
+.advanced-panel { border: 1px solid rgba(216,180,94,.2); border-radius: 4px; padding: 16px; background: rgba(255,255,255,.01); display: grid; gap: 12px; }
+.advanced-panel label { display: grid; gap: 6px; }
+.label-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+/* Feature buttons with help */
+.feature-button-group { display: flex; align-items: center; gap: 4px; }
+.feature-button-group button { flex: 1; }
+.feature-button-group .status { font-size: 12px; opacity: .7; }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .prototype-controls { flex-wrap: wrap; }
+  .tempo-control { width: 100%; }
+  .tonic-control { width: 100%; order: 5; }
+  .spectrum-frame { height: 150px; }
+  .chromatic-grid { grid-template-columns: repeat(6, 1fr); }
+  .chromatic-cell { padding: 8px 4px; }
+  .chromatic-cell strong { font-size: 11px; }
+  .chromatic-cell small { font-size: 9px; }
+  .raga-picker-wrapper { flex-direction: column; align-items: stretch; }
+  .picker-hint { margin-left: 0; }
+}
+
 .guitar-container { padding: 60px 40px; overflow-x: auto; } .fretboard { display: flex; flex-direction: column; gap: 24px; } .string-row { display: flex; align-items: center; gap: 8px; } .string-label { width: 100px; font-size: 18px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(216,180,94,.8); min-width: 100px; } .fret { width: 90px; height: 120px; padding: 4px; border: 2px solid rgba(216,180,94,.2); border-radius: 4px; background: rgba(255,255,255,.02); color: rgba(216,180,94,.5); font: 14px monospace; cursor: pointer; transition: background .18s, border-color .18s; display: flex; align-items: center; justify-content: center; } .fret-label { font-size: 14px; font-weight: 500; text-align: center; } .fret:hover { border-color: rgba(216,180,94,.6); background: rgba(216,180,94,.08); } .fret.note { border-color: rgba(212,92,44,.7); background: rgba(212,92,44,.15); color: rgba(212,92,44,.9); font-weight: bold; font-size: 16px; }
