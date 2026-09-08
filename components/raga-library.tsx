@@ -74,9 +74,10 @@ function RagaPicker({ ragas, selected, onSelect }: { ragas: Raga[]; selected: Ra
 function Guitar({ raga, sruti, temperament, tonic }: { raga: Raga; sruti: number; temperament: Temperament; tonic: number }) {
   const notes = useMemo(() => new Set([...raga.arohana, ...raga.avarohana].map(s => s.semitones % 12)), [raga]);
   const guitarTuning = [4, 9, 2, 7, 11, 4]; // E, A, D, G, B, E in semitones from C
+  const tuningNames = ['E', 'A', 'D', 'G', 'B', 'E'];
   const frets = 24;
   const freq = (semitones: number, octave: number) => sruti * Math.pow(2, (centsFor(semitones, temperament) + octave * 1200) / 1200);
-  return <div className="guitar-container"><div className="fretboard">{guitarTuning.map((open, stringIdx) => <div key={stringIdx} className="string-row"><div className="string-label">String {stringIdx + 1}</div>{Array.from({ length: frets + 1 }, (_, fret) => { const semitone = (open + fret) % 12; const isNote = notes.has(semitone); const baseFreq = freq(semitone, Math.floor((open + fret) / 12)); return <button key={fret} className={`fret ${isNote ? 'note' : ''}`} title={`${LABELS[semitone]} (${baseFreq.toFixed(1)} Hz)`}>{fret === 0 ? '○' : fret % 12 === 0 ? '●' : ''}</button>; })}</div>)}</div></div>;
+  return <div className="guitar-container"><div className="fretboard">{guitarTuning.map((open, stringIdx) => <div key={stringIdx} className="string-row"><div className="string-label">{tuningNames[stringIdx]}</div>{Array.from({ length: frets + 1 }, (_, fret) => { const semitone = (open + fret) % 12; const isNote = notes.has(semitone); const baseFreq = freq(semitone, Math.floor((open + fret) / 12)); return <button key={fret} className={`fret ${isNote ? 'note' : ''}`} title={`${LABELS[semitone]} (${baseFreq.toFixed(1)} Hz)`}><span className="fret-label">{isNote ? LABELS[semitone] : (fret === 0 ? '○' : fret % 12 === 0 ? '●' : '')}</span></button>; })}</div>)}</div></div>;
 }
 
 export function RagaLibrary({ sruti, onSruti }: { sruti: number; onSruti: (value: number) => void }) {
