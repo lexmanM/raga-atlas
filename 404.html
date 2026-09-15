@@ -7,10 +7,21 @@
       name="description"
       content="A focused Carnatic Rāga Atlas for exploring melakarta and janya ragas."
     />
-    <link rel="icon" href="/raga-atlas/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>Rāga Atlas — Carnatic raga reference</title>
-    <script type="module" crossorigin src="/raga-atlas/assets/index-C4ksEMsg.js"></script>
-    <link rel="stylesheet" crossorigin href="/raga-atlas/assets/index-CItvBpDF.css">
+    <script>
+      // Set the theme before first paint so a returning reader never sees the wrong palette flash.
+      (function () {
+        var theme;
+        try { theme = localStorage.getItem('ragas.theme'); } catch (e) {}
+        if (theme !== 'night' && theme !== 'paper' && theme !== 'peacock') {
+          theme = matchMedia('(prefers-color-scheme: light)').matches ? 'paper' : 'night';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-Kh8zYO3j.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BcZMr1sq.css">
   </head>
   <body>
     <div id="root"></div>
