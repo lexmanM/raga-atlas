@@ -27,7 +27,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          # No `cache: npm`: setup-node keys that cache on a lock file and fails the
+          # step outright when there is none, and package-lock.json is not tracked.
 
       - name: Install dependencies
         # Not `npm ci`. rolldown and @tailwindcss/oxide declare optional
