@@ -13,7 +13,10 @@ it repeats against a metronome until stopped. Spaces never matter. Each bar
 `SRG|RGM` in four-beat bars spaces three notes evenly over four beats; with no
 bar lines each note is one beat. Notes in brackets share a slot (`S(RG)M`), `-`
 holds, `,` rests, `.N` and `S'` are the octaves below and above. The click can sound on every beat or only
-where a bar starts. The interface follows the bundled Rāga Atlas
+where a bar starts. Loops can be named and saved with their tempo and settings.
+A pattern remembers the raga it was written in and each note as a step of that
+raga's scale, so opening it in another raga re-spells it on the same steps:
+`SRG|RGM` from Bhairav becomes `SRG|RGP` in the five-note Bhupali. The interface follows the bundled Rāga Atlas
 prototype: a searchable atlas, a taxonomy primer, playable arohana and
 avarohana note paths, tonic and tempo controls, Tambura drone, spectrum view,
 and chromatic svarasthāna map.

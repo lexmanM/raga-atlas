@@ -46,18 +46,24 @@ export function variantsOf(raga: Raga, tradition: Tradition): Map<string, Varian
 // else that is not a space, so that it can be pointed at rather than silently dropped.
 export const WRITTEN = /\.*[A-Za-z]\d?'*|-|,|\(|\)|\S/g;
 
+type Resolved = { semitones: number; letter: string; octave: number; rank: number; forms: number };
+/** One written note read in a rāga: its pitch, or the reason it has none. */
+function resolveNote(part: string, variants: Map<string, Variant[]>, raga: Raga, tradition: Tradition): Resolved | string {
+  const [, below, typedLetter, digit, above] = /^(\.*)([A-Za-z])(\d?)('*)$/.exec(part) ?? []; if (!typedLetter) return `“${part}” is not sargam`;
+  const letter = typedLetter.toUpperCase(); const name = NAMES[tradition][LETTERS.indexOf(letter)]; const options = variants.get(letter);
+  if (!name) return `“${typedLetter}” is not a note name`;
+  if (!options) return `${name} is not in ${raga.name}`;
+  // One form in the rāga: the letter is enough, in either case. Two forms: the
+  // number picks one (Carnatic), otherwise lower case is the lower, upper the higher.
+  const chosen: Variant | undefined = digit ? options.find((item) => item.label === letter + digit) : options.length === 1 || typedLetter !== letter ? options[0] : options.at(-1);
+  if (!chosen) return `${letter}${digit} is not in ${raga.name}`;
+  const octave = above.length - below.length;
+  return { semitones: chosen.position + 12 * octave, letter, octave, rank: options.indexOf(chosen), forms: options.length };
+}
+
 export function parsePattern(text: string, raga: Raga, tradition: Tradition): ParsedPattern {
   const variants = variantsOf(raga, tradition); const beats: PatternBeat[] = []; const placed: Placed[] = []; const errors: string[] = []; const bars: number[] = []; let steps = 0;
-  const resolve = (part: string): number | string => {
-    const [, below, typedLetter, digit, above] = /^(\.*)([A-Za-z])(\d?)('*)$/.exec(part) ?? []; if (!typedLetter) return `“${part}” is not sargam`;
-    const letter = typedLetter.toUpperCase(); const name = NAMES[tradition][LETTERS.indexOf(letter)]; const options = variants.get(letter);
-    if (!name) return `“${typedLetter}” is not a note name`;
-    if (!options) return `${name} is not in ${raga.name}`;
-    // One form in the rāga: the letter is enough, in either case. Two forms: the
-    // number picks one (Carnatic), otherwise lower case is the lower, upper the higher.
-    const chosen: Variant | undefined = digit ? options.find((item) => item.label === letter + digit) : options.length === 1 || typedLetter !== letter ? options[0] : options.at(-1);
-    return chosen ? chosen.position + 12 * (above.length - below.length) : `${letter}${digit} is not in ${raga.name}`;
-  };
+  const resolve = (part: string): number | string => { const note = resolveNote(part, variants, raga, tradition); return typeof note === 'string' ? note : note.semitones; };
   text.split('|').forEach((segment) => {
     // Gather the bar's slots first: a slot is one written thing, or everything inside one pair of brackets.
     const slots: string[][] = []; let group: string[] | null = null; let problem = '';
@@ -87,6 +93,39 @@ export function parsePattern(text: string, raga: Raga, tradition: Tradition): Pa
     });
   });
   return { beats, placed, bars, barred: text.includes('|'), notes: placed.filter((item) => item.kind === 'note').length, length: beats.length, errors: [...new Set(errors)] };
+}
+
+// ---- Carrying a pattern into another rāga ----
+// A pattern is remembered with the rāga it was written in, and each note is read as a step
+// of that rāga's scale: its 1st, 2nd, 3rd note and so on, counted through the octaves. In
+// another rāga it is written out again on the same steps. Between two seven-note rāgas that
+// is simply the same letters taking the new rāga's forms (Bhairav's komal Re becomes Yaman's
+// Re). Into a five-note rāga the steps close up, so threes written S R G, R G M become
+// S R G, R G P — the exercise a teacher would give — rather than failing on a missing Ma.
+// Everything that is not a note (bars, brackets, holds, rests, spacing) is kept as written.
+export function respell(text: string, from: Raga, fromTradition: Tradition, to: Raga, toTradition: Tradition): string {
+  if (from.id === to.id) return text;
+  const source = variantsOf(from, fromTradition); const target = variantsOf(to, toTradition);
+  const steps = (variants: Map<string, Variant[]>) => LETTERS.split('').filter((letter) => variants.has(letter));
+  const sourceSteps = steps(source); const targetSteps = steps(target);
+  const rising = new Set(to.arohana.map((note) => pitchClass(note.semitones))); const falling = new Set(to.avarohana.map((note) => pitchClass(note.semitones)));
+  let out = ''; let cursor = 0; let previous: number | null = null;
+  for (const match of text.matchAll(WRITTEN)) {
+    out += text.slice(cursor, match.index); cursor = match.index + match[0].length;
+    const note = /[A-Za-z]/.test(match[0]) ? resolveNote(match[0], source, from, fromTradition) : null;
+    if (note === null || typeof note === 'string') { out += match[0]; continue; }
+    const step = note.octave * sourceSteps.length + sourceSteps.indexOf(note.letter);
+    const octave = Math.floor(step / targetSteps.length); const forms = target.get(targetSteps[step - octave * targetSteps.length]) ?? [];
+    // A note with two forms in the new rāga: keep lower-or-higher if the old rāga also had two;
+    // otherwise take the form the rāga uses in the direction the line is moving.
+    let form = forms[0];
+    if (forms.length > 1) {
+      if (note.forms > 1) form = note.rank === 0 ? forms[0] : forms[forms.length - 1];
+      else { const up = previous === null || forms[0].position + 12 * octave >= previous; const used = forms.filter((item) => (up ? rising : falling).has(item.position)); form = used.length === 1 ? used[0] : up ? forms[forms.length - 1] : forms[0]; }
+    }
+    previous = form.position + 12 * octave; out += typed(previous, to, toTradition);
+  }
+  return out + text.slice(cursor);
 }
 
 /** How a note is typed so that parsePattern reads it back as the same pitch. */

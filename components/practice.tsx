@@ -1,20 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { startPractice, type PracticeHandle, type PracticePosition, type PracticeSettings, type Temperament, type Voice } from '@/lib/audio-engine';
-import { accentsOf, fitsBars, parsePattern, PLAIN, presets, TALAS, timed, typed, variantsOf, WRITTEN, type PatternElement, type Timing } from '@/lib/practice';
-import { pitchClass, type Raga } from '@/lib/ragas';
+import { HINDUSTANI_ALL } from '@/lib/hindustani';
+import { accentsOf, fitsBars, parsePattern, PLAIN, presets, respell, TALAS, timed, typed, variantsOf, WRITTEN, type PatternElement, type Timing } from '@/lib/practice';
+import { ALL_RAGAS, pitchClass, type Raga } from '@/lib/ragas';
 import type { Tradition } from '@/lib/traditions';
 import { Swar } from './swar';
 
 const STORE = 'ragas.practice';
 type Melody = PracticeSettings['melody'];
-type Saved = { patterns: Record<string, string>; bpm: number; speed: number; bar: number; click: Timing['click']; tala: Record<Tradition, string>; melody: Melody; countIn: boolean };
-const DEFAULTS: Saved = { patterns: {}, bpm: 72, speed: 1, bar: 4, click: 'beat', tala: { carnatic: 'adi', hindustani: 'tintal' }, melody: 'on', countIn: true };
+// The pattern being worked on. It is either one of the generated exercises, which is
+// rebuilt for whichever rāga is open, or something written — kept exactly as written,
+// together with the rāga it was written in, so it can be re-spelt for any other.
+type Draft = { preset: string } | { text: string; ragaId: string; tradition: Tradition };
+// A saved loop is a snapshot: what was written, where, and how it was being played.
+type Loop = { id: string; name: string; text: string; ragaId: string; tradition: Tradition; bpm: number; speed: number; bar: number; click: Timing['click']; melody: Melody; tala: string };
+type Saved = { draft: Draft; loops: Loop[]; active: string | null; bpm: number; speed: number; bar: number; click: Timing['click']; tala: Record<Tradition, string>; melody: Melody; countIn: boolean };
+const DEFAULTS: Saved = { draft: { preset: 'scale' }, loops: [], active: null, bpm: 72, speed: 1, bar: 4, click: 'beat', tala: { carnatic: 'adi', hindustani: 'tintal' }, melody: 'on', countIn: true };
+const findRaga = (id: string) => ALL_RAGAS.find((item) => item.id === id) ?? HINDUSTANI_ALL.find((item) => item.id === id);
 const BAR_LENGTHS = [0, 2, 3, 4, 5, 6, 7, 8];
 const COUNT_IN = 4;
 
 function readSaved(): Saved {
-  try { const stored = JSON.parse(localStorage.getItem(STORE) ?? 'null') as Partial<Saved> | null; return { ...DEFAULTS, ...stored, tala: { ...DEFAULTS.tala, ...stored?.tala }, patterns: { ...stored?.patterns } }; } catch { return DEFAULTS; }
+  try { const stored = JSON.parse(localStorage.getItem(STORE) ?? 'null') as Partial<Saved> | null; return { ...DEFAULTS, ...stored, tala: { ...DEFAULTS.tala, ...stored?.tala }, draft: stored?.draft ?? DEFAULTS.draft, loops: Array.isArray(stored?.loops) ? stored.loops : [] }; } catch { return DEFAULTS; }
 }
 
 const WORDS = {
@@ -31,12 +39,17 @@ function Note({ semitones, raga, tradition }: { semitones: number; raga: Raga; t
 }
 
 export function PracticeSection({ raga, tradition, sruti, temperament, voice, kampita, onBeforeStart, interrupt }: { raga: Raga; tradition: Tradition; sruti: number; temperament: Temperament; voice: Voice; kampita: boolean; onBeforeStart: () => void; interrupt: number }) {
-  const [saved, setSaved] = useState(readSaved); const [octave, setOctave] = useState(0); const [position, setPosition] = useState<PracticePosition | null>(null); const [running, setRunning] = useState(false);
+  const [saved, setSaved] = useState(readSaved); const [octave, setOctave] = useState(0); const [name, setName] = useState(''); const [deleting, setDeleting] = useState<string | null>(null); const [position, setPosition] = useState<PracticePosition | null>(null); const [running, setRunning] = useState(false);
   const handle = useRef<PracticeHandle | null>(null); const taps = useRef<number[]>([]);
   const save = (change: Partial<Saved>) => setSaved((previous) => { const next = { ...previous, ...change }; try { localStorage.setItem(STORE, JSON.stringify(next)); } catch {} return next; });
 
   const library = useMemo(() => presets(raga, tradition), [raga, tradition]);
-  const text = saved.patterns[raga.id] ?? library[0].text; const setText = (value: string) => save({ patterns: { ...saved.patterns, [raga.id]: value } });
+  // What is shown is always spelt for the open rāga. A written pattern that came from another
+  // rāga is re-spelt on the way to the screen and left untouched in storage, so going back to
+  // its own rāga gives back exactly what was written. Editing makes it this rāga's.
+  const draft = saved.draft; const origin = 'text' in draft && draft.ragaId !== raga.id ? findRaga(draft.ragaId) : undefined;
+  const text = 'preset' in draft ? (library.find((item) => item.id === draft.preset) ?? library[0]).text : origin ? respell(draft.text, origin, draft.tradition, raga, tradition) : draft.text;
+  const setText = (value: string) => save({ draft: { text: value, ragaId: raga.id, tradition } });
   const parsed = useMemo(() => parsePattern(text, raga, tradition), [text, raga, tradition]);
   const talas = [...PLAIN, ...TALAS[tradition]]; const tala = talas.find((item) => item.id === saved.tala[tradition]) ?? talas[1];
   const accents = useMemo(() => accentsOf(tala), [tala]);
@@ -54,6 +67,17 @@ export function PracticeSection({ raga, tradition, sruti, temperament, voice, ka
   useEffect(() => () => { handle.current?.stop(); handle.current = null; setRunning(false); setPosition(null); }, [raga.id, tradition, interrupt]);
 
   // Spaces mean nothing in a pattern, so the buttons write none: S, R, –, | gives SR-|.
+  const activeLoop = saved.loops.find((item) => item.id === saved.active);
+  const keep = () => {
+    if (!playable) return;
+    const label = name.trim() || `${raga.name} · ${text.replace(/\s+/g, '').slice(0, 14)}`;
+    const existing = saved.loops.find((item) => item.name.toLowerCase() === label.toLowerCase());
+    const loop: Loop = { id: existing?.id ?? Date.now().toString(36), name: label, text, ragaId: raga.id, tradition, bpm: saved.bpm, speed: saved.speed, bar: saved.bar, click: saved.click, melody: saved.melody, tala: tala.id };
+    save({ loops: existing ? saved.loops.map((item) => (item.id === existing.id ? loop : item)) : [...saved.loops, loop], active: loop.id, draft: { text, ragaId: raga.id, tradition } }); setName(label);
+  };
+  // Loading brings back how it was being played too. A tāla belongs to its tradition, so it only comes back there.
+  const load = (loop: Loop) => { save({ draft: { text: loop.text, ragaId: loop.ragaId, tradition: loop.tradition }, active: loop.id, bpm: loop.bpm, speed: loop.speed, bar: loop.bar, click: loop.click, melody: loop.melody, tala: loop.tradition === tradition ? { ...saved.tala, [tradition]: loop.tala } : saved.tala }); setName(loop.name); setDeleting(null); };
+  const remove = (loop: Loop) => { save({ loops: saved.loops.filter((item) => item.id !== loop.id), active: saved.active === loop.id ? null : saved.active }); setDeleting(null); };
   const append = (token: string) => setText(text.trimEnd() + token);
   const backspace = () => { const trimmed = text.trimEnd(); const last = [...trimmed.matchAll(WRITTEN)].at(-1); setText(last ? trimmed.slice(0, last.index).trimEnd() : ''); };
   const tap = () => { const now = performance.now(); taps.current = [...taps.current.filter((at) => now - at < 2500), now].slice(-5); if (taps.current.length < 2) return; const gaps = taps.current.slice(1).map((at, index) => at - taps.current[index]); save({ bpm: Math.max(30, Math.min(240, Math.round(60000 / (gaps.reduce((sum, gap) => sum + gap, 0) / gaps.length)))) }); };
@@ -75,6 +99,7 @@ export function PracticeSection({ raga, tradition, sruti, temperament, voice, ka
       <textarea id="practice-pattern" aria-label="Sargam to practise" aria-invalid={parsed.errors.length > 0} rows={2} spellCheck={false} autoCapitalize="off" autoCorrect="off" value={text} onChange={(event) => setText(event.target.value)} placeholder="SRG|RGM|GMP" />
       <div className="practice-preview" aria-hidden="true">{barred.map((beats, bar) => <span className="practice-bar-group" key={bar}>{beats.map((beat, index) => <span className={`practice-beat ${beat.error ? 'bad' : ''} ${beat.grouped ? 'group' : ''}`} key={index} title={beat.error ?? (beat.grouped ? 'These share one slot' : undefined)}>{beat.error ? beat.text : beat.elements.map(element)}</span>)}{bar < barred.length - 1 && <span className="practice-bar" />}</span>)}</div>
       <output className={`practice-status ${!running && !playable ? 'bad' : ''}`}>{status}</output>
+      {origin && <p className="practice-origin">{activeLoop ? `“${activeLoop.name}” was` : 'This was'} written in {origin.name} · shown here on the same steps of {raga.name}’s scale · edit it and it becomes {raga.name}’s</p>}
     </div>
     <div className="practice-row">
       <span className="practice-caption">Notes</span>
@@ -84,7 +109,15 @@ export function PracticeSection({ raga, tradition, sruti, temperament, voice, ka
     </div>
     <div className="practice-row">
       <span className="practice-caption">Exercises</span>
-      <div className="practice-keys presets">{library.map((item) => <button className={item.text === text ? 'active' : ''} key={item.id} onClick={() => setText(item.text)} type="button">{item.label}</button>)}</div>
+      <div className="practice-keys presets">{library.map((item) => <button className={'preset' in draft && (library.find((entry) => entry.id === draft.preset) ?? library[0]).id === item.id ? 'active' : ''} key={item.id} onClick={() => { save({ draft: { preset: item.id }, active: null }); setName(''); }} type="button">{item.label}</button>)}</div>
+    </div>
+    <div className="practice-row">
+      <span className="practice-caption">Saved</span>
+      <div className="practice-keys loops">{saved.loops.length === 0 && <span className="practice-empty">nothing saved yet</span>}{saved.loops.map((loop) => <span className={`practice-loop ${loop.id === saved.active ? 'active' : ''}`} key={loop.id}>
+        <button type="button" onClick={() => load(loop)} title={`Written in ${findRaga(loop.ragaId)?.name ?? 'another rāga'} · ${loop.bpm} bpm · loads re-spelt for ${raga.name}`}>{loop.name}</button>
+        {deleting === loop.id ? <><button className="danger" type="button" onClick={() => remove(loop)}>Delete</button><button type="button" onClick={() => setDeleting(null)}>Keep</button></> : <button type="button" onClick={() => setDeleting(loop.id)} aria-label={`Delete ${loop.name}`}>✕</button>}
+      </span>)}</div>
+      <div className="practice-save"><input id="practice-name" aria-label="Name for this loop" value={name} onChange={(event) => setName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') keep(); }} placeholder="name this loop" maxLength={40} /><button type="button" onClick={keep} disabled={!playable}>{saved.loops.some((item) => item.name.toLowerCase() === name.trim().toLowerCase()) ? 'Update' : 'Save'}</button></div>
     </div>
     <div className="practice-row transport">
       {running ? <button className="practice-go stop" type="button" onClick={stop}>■ Stop</button> : <button className="practice-go" type="button" onClick={start} disabled={!playable}>▶ Start loop</button>}

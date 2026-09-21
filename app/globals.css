@@ -2984,3 +2984,18 @@ body { background-image: radial-gradient(80% 90% at 70% 0%, var(--bg-wash), tran
 .practice-lights i.w1 { box-shadow: 0 0 0 1.5px rgb(var(--accent-rgb) / .4); }
 .practice-lights i.w2 { width: 14px; height: 14px; box-shadow: 0 0 0 1.5px rgb(var(--accent-rgb) / .6); }
 .practice-lights i.on { background: var(--prototype-gold); box-shadow: 0 0 10px rgb(var(--accent-rgb) / .7); }
+
+/* Saved loops: a chip to load, a two-step cross to delete, and a name-and-save box. */
+.practice-keys.loops { align-items: center; }
+.practice-empty { color: rgb(var(--text-rgb) / .35); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.practice-loop { display: inline-flex; overflow: hidden; border: 1px solid rgb(var(--accent-rgb) / .35); border-radius: 8px; }
+.practice-loop.active { border-color: var(--prototype-gold); background: rgb(var(--accent-rgb) / .12); }
+.practice-keys .practice-loop button { min-width: 0; border: 0; border-radius: 0; font-size: 12px; letter-spacing: .04em; }
+.practice-keys .practice-loop button + button { min-width: 34px; padding: 6px 8px; border-left: 1px solid rgb(var(--accent-rgb) / .2); color: rgb(var(--text-rgb) / .5); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.practice-keys .practice-loop button.danger { color: rgb(var(--warm-rgb)); }
+.practice-save { display: inline-flex; gap: 6px; margin-left: auto; }
+.practice-save input { width: 190px; min-height: 38px; box-sizing: border-box; padding: 6px 10px; border: 1px solid rgb(var(--accent-rgb) / .3); border-radius: 8px; outline: 0; background: rgb(var(--tint-rgb) / .03); color: var(--prototype-text); font: inherit; font-size: 12px; }
+.practice-save input:focus { border-color: rgb(var(--warm-rgb) / .7); }
+.practice-save button { min-height: 38px; padding: 6px 14px; border: 1px solid var(--prototype-gold); border-radius: 8px; background: transparent; color: var(--accent-strong); font: inherit; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+.practice-save button:disabled { opacity: .4; cursor: default; }
+.practice-origin { margin: 0; padding: 8px 10px; border-left: 2px solid var(--prototype-gold); background: rgb(var(--accent-rgb) / .07); color: rgb(var(--text-rgb) / .7); font-size: 11px; letter-spacing: .04em; }
