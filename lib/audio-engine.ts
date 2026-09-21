@@ -1,6 +1,6 @@
 import { centsFor, type Swara } from './ragas';
 
-export type Voice = 'veena' | 'chitravina' | 'swarmandal';
+export type Voice = 'veena' | 'chitravina' | 'swarmandal' | 'harmonium';
 export type Temperament = 'just' | 'equal';
 export type PlaybackHandle = { stop: () => void };
 
@@ -88,16 +88,90 @@ function scheduleSwarmandal(ctx: AudioContext, frequency: number, start: number,
   mix.connect(highpass); highpass.connect(lowpass); wetAndDry(ctx, lowpass, gain, .28); gain.connect(output);
 }
 
+// A harmonium is a free reed: it sustains for as long as the bellows feed it and
+// has no pluck to model, so this voice is sampled rather than synthesised. The
+// takes are one octave of a single instrument with the coupled stop drawn —
+// see public/audio/harmonium/README.md. Each `hz` is that sample's MEASURED
+// fundamental, not its nominal pitch: the reeds are filed by hand and sit a few
+// cents sharp, and dividing by the measured value cancels that drift so Just and
+// Equal both land exactly. Do not round these to equal-temperament values.
+type HarmoniumSample = { file: string; hz: number; loopStart: number; loopEnd: number };
+const HARMONIUM_SAMPLES: readonly HarmoniumSample[] = [
+  { file: 'coupled_C3.wav', hz: 130.85, loopStart: 0.54998, loopEnd: 1.62689 },
+  { file: 'coupled_D3.wav', hz: 147.35, loopStart: 0.54998, loopEnd: 1.75810 },
+  { file: 'coupled_E3.wav', hz: 165.35, loopStart: 0.54998, loopEnd: 1.76512 },
+  { file: 'coupled_Fs3.wav', hz: 185.65, loopStart: 0.54998, loopEnd: 1.57918 },
+  { file: 'coupled_Gs3.wav', hz: 208.30, loopStart: 0.54998, loopEnd: 1.58249 },
+  { file: 'coupled_As3.wav', hz: 234.05, loopStart: 0.54998, loopEnd: 1.65673 },
+  { file: 'coupled_B3.wav', hz: 248.35, loopStart: 0.54998, loopEnd: 1.71823 },
+];
+
+const harmoniumBuffers = new Map<string, AudioBuffer>();
+let harmoniumLoad: Promise<void> | null = null;
+
+/** Fetch and decode the harmonium takes. Safe to call repeatedly; the UI calls
+ *  this as soon as the voice is picked so playback never waits on the network. */
+export function loadHarmonium(): Promise<void> {
+  harmoniumLoad ??= (async () => {
+    const ctx = getContext();
+    // Vite rewrites BASE_URL for the GitHub Pages subpath; never hardcode '/'.
+    const base = import.meta.env.BASE_URL;
+    await Promise.all(HARMONIUM_SAMPLES.map(async (sample) => {
+      const response = await fetch(`${base}audio/harmonium/${sample.file}`);
+      if (!response.ok) throw new Error(`harmonium sample ${sample.file}: HTTP ${response.status}`);
+      harmoniumBuffers.set(sample.file, await ctx.decodeAudioData(await response.arrayBuffer()));
+    }));
+  })().catch((error: unknown) => { harmoniumLoad = null; throw error; });
+  return harmoniumLoad;
+}
+
+function harmoniumSampleFor(frequency: number) {
+  let best = HARMONIUM_SAMPLES[0]; let closest = Infinity;
+  for (const sample of HARMONIUM_SAMPLES) {
+    const distance = Math.abs(Math.log2(frequency / sample.hz));
+    if (distance < closest) { closest = distance; best = sample; }
+  }
+  return best;
+}
+
+function scheduleHarmonium(ctx: AudioContext, frequency: number, start: number, duration: number, output: GainNode) {
+  const sample = harmoniumSampleFor(frequency);
+  const buffer = harmoniumBuffers.get(sample.file);
+  if (!buffer) return;
+  const source = ctx.createBufferSource(); source.buffer = buffer;
+  source.playbackRate.value = frequency / sample.hz;
+  source.loop = true; source.loopStart = sample.loopStart; source.loopEnd = sample.loopEnd;
+  // The take carries the reed's own attack, so the envelope only opens far enough
+  // to avoid a click; and a reed stops when the air does, so it never rings out.
+  const release = .16; const level = .46;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(.0001, start); gain.gain.exponentialRampToValueAtTime(level, start + .012);
+  gain.gain.setValueAtTime(level, start + duration); gain.gain.exponentialRampToValueAtTime(.0001, start + duration + release);
+  // Send after the envelope, not before: this source loops, so a pre-envelope
+  // send would keep feeding the reverb for the whole buffer.
+  source.connect(gain); gain.connect(output);
+  const send = ctx.createGain(); send.gain.value = .1; gain.connect(send); send.connect(impulse(ctx));
+  source.start(start); source.stop(start + duration + release + .02);
+}
+
 export function playRaga(options: { sequence: Swara[]; sruti: number; temperament: Temperament; voice?: Voice; kampita: boolean; tempo?: number; onSwara: (swara: Swara | null, index: number) => void }): PlaybackHandle {
   const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .64; output.connect(analyser ?? ctx.destination); const voice = options.voice ?? 'veena'; const beat = .72 / (options.tempo ?? 1); const schedule = options.sequence;
   // The last note of the descent is held so the phrase lands rather than stops.
   const lengthOf = (index: number) => index === schedule.length - 1 ? beat * 1.6 : beat;
-  const starts: number[] = []; let cursor = ctx.currentTime + .08;
-  for (let index = 0; index < schedule.length; index++) { starts.push(cursor); cursor += lengthOf(index); }
-  const finish = cursor + .25;
-  schedule.forEach((swara, index) => { const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.semitones % 12 === 0 || swara.semitones === 7; if (voice === 'chitravina') scheduleChitravina(ctx, frequency, prev, starts[index], lengthOf(index), output, options.kampita, fixed); else if (voice === 'swarmandal') scheduleSwarmandal(ctx, frequency, starts[index], lengthOf(index), output); else scheduleVeena(ctx, frequency, starts[index], lengthOf(index), output); });
-  let raf = 0; const tick = () => { const now = ctx.currentTime; let at = -1; for (let index = 0; index < schedule.length; index++) if (now >= starts[index] && now < starts[index] + lengthOf(index)) at = index; options.onSwara(at < 0 ? null : schedule[at], at); if (now < finish) raf = requestAnimationFrame(tick); else options.onSwara(null, -1); }; raf = requestAnimationFrame(tick);
-  return { stop: () => { cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null, -1); } };
+  const starts: number[] = []; let finish = Number.POSITIVE_INFINITY; let stopped = false;
+  const begin = () => {
+    if (stopped) return;
+    let cursor = ctx.currentTime + .08;
+    for (let index = 0; index < schedule.length; index++) { starts[index] = cursor; cursor += lengthOf(index); }
+    finish = cursor + .25;
+    schedule.forEach((swara, index) => { const frequency = options.sruti * Math.pow(2, centsFor(swara.semitones, options.temperament) / 1200); const prev = index === 0 ? frequency : options.sruti * Math.pow(2, centsFor(schedule[index - 1].semitones, options.temperament) / 1200); const fixed = swara.semitones % 12 === 0 || swara.semitones === 7; if (voice === 'chitravina') scheduleChitravina(ctx, frequency, prev, starts[index], lengthOf(index), output, options.kampita, fixed); else if (voice === 'swarmandal') scheduleSwarmandal(ctx, frequency, starts[index], lengthOf(index), output); else if (voice === 'harmonium') scheduleHarmonium(ctx, frequency, starts[index], lengthOf(index), output); else scheduleVeena(ctx, frequency, starts[index], lengthOf(index), output); });
+  };
+  // Harmonium is sampled, so the phrase waits for the takes to decode rather than
+  // starting silently. Every other voice is synthesised and can start at once.
+  if (voice === 'harmonium') void loadHarmonium().then(begin, () => { finish = ctx.currentTime; });
+  else begin();
+  let raf = 0; const tick = () => { const now = ctx.currentTime; let at = -1; for (let index = 0; index < starts.length; index++) if (now >= starts[index] && now < starts[index] + lengthOf(index)) at = index; options.onSwara(at < 0 ? null : schedule[at], at); if (now < finish) raf = requestAnimationFrame(tick); else options.onSwara(null, -1); }; raf = requestAnimationFrame(tick);
+  return { stop: () => { stopped = true; cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null, -1); } };
 }
 
 export function startDrone(sruti: number): PlaybackHandle {
@@ -118,16 +192,27 @@ export function playSustainedNote(options: { frequency: number; voice?: Voice; t
   const frequency = options.frequency;
   const fixed = frequency % 130.81 === 0; // rough check for fixed notes (Sa frequency)
 
-  if (voice === 'chitravina') {
-    scheduleChitravina(ctx, frequency, frequency, start, longDuration, output, options.kampita ?? false, fixed);
-  } else if (voice === 'swarmandal') {
-    scheduleSwarmandal(ctx, frequency, start, longDuration, output);
-  } else {
-    scheduleVeena(ctx, frequency, start, longDuration, output);
-  }
+  let stopped = false;
+  const begin = () => {
+    if (stopped) return;
+    // A deferred start cannot use the captured `start`, which is already in the past.
+    const at = Math.max(start, ctx.currentTime);
+    if (voice === 'chitravina') {
+      scheduleChitravina(ctx, frequency, frequency, at, longDuration, output, options.kampita ?? false, fixed);
+    } else if (voice === 'swarmandal') {
+      scheduleSwarmandal(ctx, frequency, at, longDuration, output);
+    } else if (voice === 'harmonium') {
+      scheduleHarmonium(ctx, frequency, at, longDuration, output);
+    } else {
+      scheduleVeena(ctx, frequency, at, longDuration, output);
+    }
+  };
+  if (voice === 'harmonium') void loadHarmonium().then(begin, () => {});
+  else begin();
 
   return {
     stop: () => {
+      stopped = true;
       output.gain.cancelScheduledValues(ctx.currentTime);
       output.gain.setTargetAtTime(0, ctx.currentTime, .12); // fade out over ~350ms
     }
