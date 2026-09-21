@@ -1,7 +1,10 @@
 # Rāga Atlas
 
-A focused Carnatic raga reference for exploring the 72 melakarta ragas and a
-curated set of janya ragas. The interface follows the bundled Rāga Atlas
+A focused raga reference with two modes. **Carnatic** covers the 72 melakarta
+ragas and a curated set of janya ragas. **Hindustani** covers Bhatkhande's ten
+thāṭs and thirty ragas, written in his notation (komal underlined, tīvra Ma
+stroked), with vādī/samvādī, pakaḍ and time of day. The switch sits above the
+logo; each mode remembers its own raga, filter and voice. The interface follows the bundled Rāga Atlas
 prototype: a searchable atlas, a taxonomy primer, playable arohana and
 avarohana note paths, tonic and tempo controls, Tambura drone, spectrum view,
 and chromatic svarasthāna map.

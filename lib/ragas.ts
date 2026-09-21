@@ -2,12 +2,20 @@ export type Swara = { label: string; semitones: number };
 export type Raga = {
   id: string;
   name: string;
-  group: 'melakarta' | 'janya';
+  // 'melakarta' and 'janya' are Carnatic; 'thaat' and 'raga' are Hindustani.
+  group: 'melakarta' | 'janya' | 'thaat' | 'raga';
   parentMela?: number;
   arohana: Swara[];
   avarohana: Swara[];
   sancharas?: string;
   gamakaNotes?: string;
+  // Hindustani only — see lib/hindustani.ts.
+  thaat?: string;
+  thaatNumber?: number;
+  vadi?: number;
+  samvadi?: number;
+  prahar?: number;
+  pakad?: Swara[][];
 };
 
 export const JUST_CENTS = [0, 112, 204, 316, 386, 498, 590, 702, 814, 884, 1018, 1088] as const;
@@ -81,4 +89,8 @@ export const fullScale = (raga: Raga): Swara[] => [...ascent(raga), ...descent(r
 
 export const MELAKARTAS = Array.from({ length: 72 }, (_, i) => melakarta(i + 1));
 export const ALL_RAGAS = [...JANYA_RAGAS, ...MELAKARTAS];
-export const centsFor = (semitones: number, temperament: 'just' | 'equal') => semitones === 12 ? 1200 : temperament === 'just' ? JUST_CENTS[semitones] : semitones * 100;
+/** Position within the octave, 0–11, for any semitone count including ones below Sa. */
+export const pitchClass = (semitones: number) => ((semitones % 12) + 12) % 12;
+// Octave-aware so a Hindustani āroha can start below Sa (Yaman opens on the lower Ni).
+// For 0–12, the only range Carnatic data uses, the result is what it always was.
+export const centsFor = (semitones: number, temperament: 'just' | 'equal') => { const octave = Math.floor(semitones / 12); return octave * 1200 + (temperament === 'just' ? JUST_CENTS[pitchClass(semitones)] : pitchClass(semitones) * 100); };

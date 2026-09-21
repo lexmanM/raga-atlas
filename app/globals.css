@@ -2889,3 +2889,43 @@ body { background-image: radial-gradient(80% 90% at 70% 0%, var(--bg-wash), tran
 .guitar-header .tonic-control button:hover, .guitar-header .tonic-control button.active { border-color: rgb(var(--accent-rgb)); color: var(--accent-strong); }
 .guitar-container { padding: 8px 0 24px; }
 .fret.sa { background: rgb(var(--warm-rgb) / .32); color: var(--text-strong); }
+
+/* ---- Tradition switch: Carnatic | Hindustani. It replaces the static eyebrow that
+   used to name the tradition, so it keeps that eyebrow's small-caps voice. ---- */
+/* The identity column is as wide as the logo, and the top bar's wrapping depends on
+   that. `width: 0; min-width: 100%` keeps the switch from ever widening the column,
+   so adding it cannot push the picker onto another row. */
+.tradition-switch { display: flex; align-self: stretch; box-sizing: border-box; width: 0; min-width: 100%; gap: 2px; margin: 0 0 2px; padding: 2px; border: 1px solid rgb(var(--accent-rgb) / .22); border-radius: 8px; }
+.tradition-switch button { flex: 1 1 auto; padding: 5px 4px; border: 0; border-radius: 6px; background: none; color: rgb(var(--text-rgb) / .5); font: inherit; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; cursor: pointer; }
+.tradition-switch button:hover { color: rgb(var(--text-rgb) / .9); }
+.tradition-switch button[aria-pressed='true'] { background: rgb(var(--accent-rgb) / .2); color: var(--text-strong); }
+.tradition-switch button:focus-visible { outline: 2px solid rgb(var(--accent-rgb) / .8); outline-offset: 1px; }
+
+/* ---- A Hindustani swar, drawn the Bhatkhande way. The slots above and below the
+   letter have a fixed height whether or not they hold a mark, so an underlined,
+   dotted note and a bare one still sit on the same baseline in a row of chips. ---- */
+.swar { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; vertical-align: middle; }
+.swar-slot { display: flex; flex-direction: column; align-items: center; gap: .06em; height: .5em; }
+.swar-slot.top { justify-content: flex-end; padding-bottom: .05em; }
+.swar-slot.bottom { justify-content: flex-start; padding-top: .1em; }
+.swar-dot { width: .17em; height: .17em; min-width: 2px; min-height: 2px; border-radius: 50%; background: currentColor; }
+.swar-stroke { width: .075em; min-width: 1px; height: .26em; background: currentColor; }
+.swar.komal .swar-letter { text-decoration: underline; text-decoration-thickness: .07em; text-underline-offset: .13em; }
+
+.chromatic-cell .swar { font-size: 13px; }
+.swar-kind { min-height: 9px; color: rgb(var(--text-rgb) / .3); font-size: 7.5px; letter-spacing: .14em; text-transform: uppercase; }
+.chromatic-cell.lit .swar-kind { color: rgb(var(--accent-rgb) / .8); }
+.fret-label .swar { font-size: 15px; }
+
+/* ---- Hindustani header: vādī/samvādī, the pakaḍ, and the prahar where the mela number sits ---- */
+.prototype-header p.vadi-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0 .5em; }
+.vadi-line .swar { color: var(--text-strong); font-size: 15px; letter-spacing: 0; }
+.pakad-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 14px; }
+.pakad-label { color: rgb(var(--accent-rgb) / .72); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; }
+.pakad-notes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; color: var(--text-strong); font-size: 17px; }
+.pakad-phrase { display: inline-flex; align-items: center; gap: .42em; }
+/* Phrases are separated by a hairline rather than a comma, which at this size reads as a subscript on the last note. */
+.pakad-phrase + .pakad-phrase::before { content: ''; align-self: center; width: 1px; height: 1em; margin: 0 .75em; background: rgb(var(--text-rgb) / .28); }
+.pakad-line button { padding: 5px 11px; border: 1px solid rgb(var(--accent-rgb) / .3); border-radius: 999px; background: transparent; color: rgb(var(--text-rgb) / .75); font: inherit; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+.pakad-line button:hover { border-color: rgb(var(--accent-rgb) / .75); color: var(--text-strong); }
+.time-coordinate strong { white-space: nowrap; }
