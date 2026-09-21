@@ -4,7 +4,16 @@ A focused raga reference with two modes. **Carnatic** covers the 72 melakarta
 ragas and a curated set of janya ragas. **Hindustani** covers Bhatkhande's ten
 thāṭs and thirty ragas, written in his notation (komal underlined, tīvra Ma
 stroked), with vādī/samvādī, pakaḍ and time of day. The switch sits above the
-logo; each mode remembers its own raga, filter and voice. The interface follows the bundled Rāga Atlas
+logo; each mode remembers its own raga, filter and voice.
+
+At the foot of the atlas page is a **practice loop**: type any sargam in the
+selected raga, or pick a generated exercise, set the tempo, speed and tāla, and
+it repeats against a metronome until stopped. Spaces never matter. Each bar
+(`|`) lasts a chosen number of beats and its notes share them equally, so
+`SRG|RGM` in four-beat bars spaces three notes evenly over four beats; with no
+bar lines each note is one beat. Notes in brackets share a slot (`S(RG)M`), `-`
+holds, `,` rests, `.N` and `S'` are the octaves below and above. The click can sound on every beat or only
+where a bar starts. The interface follows the bundled Rāga Atlas
 prototype: a searchable atlas, a taxonomy primer, playable arohana and
 avarohana note paths, tonic and tempo controls, Tambura drone, spectrum view,
 and chromatic svarasthāna map.

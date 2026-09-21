@@ -174,10 +174,86 @@ export function playRaga(options: { sequence: Swara[]; sruti: number; temperamen
   return { stop: () => { stopped = true; cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .02); options.onSwara(null, -1); } };
 }
 
+// How far ahead of the audio clock notes are queued. A hidden tab has its timers
+// throttled to about one a second, so it needs a much longer runway than a visible
+// one, where a short runway keeps tempo changes feeling immediate.
+const horizon = (visible: number) => (typeof document !== 'undefined' && document.hidden ? 1.8 : visible);
+
 export function startDrone(sruti: number): PlaybackHandle {
-  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .22; output.connect(analyser ?? ctx.destination); const frequencies = [sruti * .75, sruti, sruti, sruti / 2]; const sources: AudioBufferSourceNode[] = [];
-  for (let i = 0; i < 48; i++) { const frequency = frequencies[i % 4]; const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequency, 2.6); source.connect(output); source.start(ctx.currentTime + .04 + i * .64); sources.push(source); }
-  return { stop: () => { output.gain.setTargetAtTime(0, ctx.currentTime, .03); sources.forEach((source) => { try { source.stop(ctx.currentTime + .2); } catch {} }); } };
+  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .22; output.connect(analyser ?? ctx.destination); const frequencies = [sruti * .75, sruti, sruti, sruti / 2]; const sources = new Set<AudioBufferSourceNode>();
+  // The plucks used to be queued 48 at once, which ran out after half a minute. They
+  // are now queued a little ahead of the clock for as long as the drone is on; the
+  // pattern and spacing are the same.
+  const origin = ctx.currentTime + .04; let index = 0;
+  const pump = () => { while (origin + index * .64 < ctx.currentTime + horizon(1.4)) { const source = ctx.createBufferSource(); source.buffer = karplusBuffer(ctx, frequencies[index % 4], 2.6); source.connect(output); source.start(Math.max(ctx.currentTime, origin + index * .64)); source.onended = () => sources.delete(source); sources.add(source); index += 1; } };
+  pump(); const timer = setInterval(pump, 300);
+  return { stop: () => { clearInterval(timer); output.gain.setTargetAtTime(0, ctx.currentTime, .03); sources.forEach((source) => { try { source.stop(ctx.currentTime + .2); } catch {} }); } };
+}
+
+// ---- Practice loop ------------------------------------------------------------
+// playRaga queues a whole phrase up front, which suits a phrase that ends. A practice
+// loop never ends and its tempo changes while it runs, so it is driven the other way:
+// a timer looks a short distance ahead of the audio clock and queues only what falls
+// inside that window. Beats are the unit; everything else is derived from them.
+export type PracticeStep = { semitones: number | null; start: number; beats: number };
+// `ticks` are the clicks of one round, in beats from its start. Weight: 2 = sam, 1 = the start of a
+// section or bar, 0 = any other beat. They belong to the pattern because a bar can start between beats.
+export type PracticePattern = { steps: PracticeStep[]; loopBeats: number; ticks: { start: number; weight: number }[] };
+export type PracticeSettings = { pattern: PracticePattern; bpm: number; melody: 'on' | 'alternate' | 'off'; sruti: number; temperament: Temperament; voice: Voice; kampita: boolean };
+export type PracticePosition = { step: number | null; beat: number; loop: number; audible: boolean; countIn: boolean };
+export type PracticeHandle = PlaybackHandle & { update: (settings: PracticeSettings) => void };
+
+function scheduleClick(ctx: AudioContext, start: number, weight: number) {
+  // Straight to the destination, past the analyser: the spectrum is there to show the
+  // rāga, and a click on every beat would draw over it.
+  const oscillator = ctx.createOscillator(); oscillator.type = 'sine'; oscillator.frequency.value = weight === 2 ? 1760 : weight === 1 ? 1320 : 990;
+  const gain = ctx.createGain(); const level = weight === 2 ? .34 : weight === 1 ? .24 : .15;
+  gain.gain.setValueAtTime(.0001, start); gain.gain.exponentialRampToValueAtTime(level, start + .002); gain.gain.exponentialRampToValueAtTime(.0001, start + .05);
+  oscillator.connect(gain); gain.connect(ctx.destination); oscillator.start(start); oscillator.stop(start + .07);
+}
+
+export function startPractice(initial: PracticeSettings, options: { countIn: number; onPosition: (position: PracticePosition | null) => void }): PracticeHandle {
+  const ctx = getContext(); const output = ctx.createGain(); output.gain.value = .64; output.connect(analyser ?? ctx.destination);
+  let settings = initial; let pending: PracticeSettings | null = null; let stopped = false; let timer = 0; let raf = 0;
+  // `beat` counts every click since the start; the loop begins once the count-in is over.
+  let beat = 0; let nextBeatAt = 0; let loopOrigin = options.countIn; let previous = settings.sruti;
+  const marks: (PracticePosition & { at: number })[] = [];
+  const hertz = (semitones: number) => settings.sruti * Math.pow(2, centsFor(semitones, settings.temperament) / 1200);
+
+  const pump = () => {
+    while (nextBeatAt < ctx.currentTime + horizon(.18)) {
+      const seconds = 60 / settings.bpm; const counting = beat < loopOrigin;
+      // A new pattern or tāla takes over where a cycle begins, so sam and the first note stay together.
+      if (pending && !counting && (beat - loopOrigin) % settings.pattern.loopBeats === 0) { settings = pending; pending = null; loopOrigin = beat; }
+      const within = counting ? 0 : (beat - loopOrigin) % settings.pattern.loopBeats; const loop = counting ? 0 : Math.floor((beat - loopOrigin) / settings.pattern.loopBeats);
+      const audible = settings.melody === 'on' || (settings.melody === 'alternate' && loop % 2 === 0);
+      if (counting) scheduleClick(ctx, nextBeatAt, 1);
+      else for (const tick of settings.pattern.ticks) if (tick.start >= within && tick.start < within + 1) scheduleClick(ctx, nextBeatAt + (tick.start - within) * seconds, tick.weight);
+      marks.push({ at: nextBeatAt, step: null, beat: counting ? beat : within, loop, audible, countIn: counting });
+      if (!counting) settings.pattern.steps.forEach((step, index) => {
+        if (step.start < within || step.start >= within + 1) return;
+        const at = nextBeatAt + (step.start - within) * seconds;
+        marks.push({ at, step: index, beat: within, loop, audible, countIn: false });
+        if (step.semitones === null || !audible) return;
+        const frequency = hertz(step.semitones); const duration = Math.max(.06, step.beats * seconds - .01); const pitchClass = ((step.semitones % 12) + 12) % 12;
+        if (settings.voice === 'chitravina') scheduleChitravina(ctx, frequency, previous, at, duration, output, settings.kampita, pitchClass === 0 || pitchClass === 7);
+        else if (settings.voice === 'swarmandal') scheduleSwarmandal(ctx, frequency, at, duration, output);
+        else if (settings.voice === 'harmonium') scheduleHarmonium(ctx, frequency, at, duration, output);
+        else scheduleVeena(ctx, frequency, at, duration, output);
+        previous = frequency;
+      });
+      nextBeatAt += seconds; beat += 1;
+    }
+  };
+  // Notes are queued ahead of time, so the display follows the audio clock rather than the queue.
+  const follow = () => { let latest: PracticePosition | null = null; while (marks.length > 0 && marks[0].at <= ctx.currentTime) { const mark = marks.shift(); if (mark && (mark.step !== null || latest === null || latest.step === null)) latest = mark; } if (latest) options.onPosition(latest); raf = requestAnimationFrame(follow); };
+  const begin = () => { if (stopped) return; nextBeatAt = ctx.currentTime + .1; pump(); timer = window.setInterval(pump, 25); raf = requestAnimationFrame(follow); };
+  if (settings.voice === 'harmonium') void loadHarmonium().then(begin, begin); else begin();
+  return {
+    // Tempo, voice and tuning apply from the next beat; a different pattern, bar length or tāla waits for the round to come round.
+    update: (next) => { if (next.voice === 'harmonium') void loadHarmonium().catch(() => {}); if (next.pattern !== settings.pattern) { pending = next; settings = { ...next, pattern: settings.pattern }; } else { settings = next; if (pending) pending = { ...next, pattern: pending.pattern }; } },
+    stop: () => { stopped = true; window.clearInterval(timer); cancelAnimationFrame(raf); output.gain.cancelScheduledValues(ctx.currentTime); output.gain.setTargetAtTime(0, ctx.currentTime, .03); options.onPosition(null); },
+  };
 }
 
 export function playSustainedNote(options: { frequency: number; voice?: Voice; temperament?: Temperament; sruti?: number; kampita?: boolean }): PlaybackHandle {

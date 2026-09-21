@@ -1,0 +1,101 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+import { startPractice, type PracticeHandle, type PracticePosition, type PracticeSettings, type Temperament, type Voice } from '@/lib/audio-engine';
+import { accentsOf, fitsBars, parsePattern, PLAIN, presets, TALAS, timed, typed, variantsOf, WRITTEN, type PatternElement, type Timing } from '@/lib/practice';
+import { pitchClass, type Raga } from '@/lib/ragas';
+import type { Tradition } from '@/lib/traditions';
+import { Swar } from './swar';
+
+const STORE = 'ragas.practice';
+type Melody = PracticeSettings['melody'];
+type Saved = { patterns: Record<string, string>; bpm: number; speed: number; bar: number; click: Timing['click']; tala: Record<Tradition, string>; melody: Melody; countIn: boolean };
+const DEFAULTS: Saved = { patterns: {}, bpm: 72, speed: 1, bar: 4, click: 'beat', tala: { carnatic: 'adi', hindustani: 'tintal' }, melody: 'on', countIn: true };
+const BAR_LENGTHS = [0, 2, 3, 4, 5, 6, 7, 8];
+const COUNT_IN = 4;
+
+function readSaved(): Saved {
+  try { const stored = JSON.parse(localStorage.getItem(STORE) ?? 'null') as Partial<Saved> | null; return { ...DEFAULTS, ...stored, tala: { ...DEFAULTS.tala, ...stored?.tala }, patterns: { ...stored?.patterns } }; } catch { return DEFAULTS; }
+}
+
+const WORDS = {
+  carnatic: { speed: 'Kālam', tala: 'Tāla', speeds: ['1st', '2nd', 'tiśra', '3rd'] },
+  hindustani: { speed: 'Laykārī', tala: 'Tāl', speeds: ['ēkgun', 'dugun', 'tigun', 'chaugun'] },
+} as const;
+
+/** One written note. Hindustani draws the Bhatkhande glyph; Carnatic keeps the letter, its number and the octave dot the chips use. */
+function Note({ semitones, raga, tradition }: { semitones: number; raga: Raga; tradition: Tradition }) {
+  if (tradition === 'hindustani') return <Swar semitones={semitones} />;
+  const position = pitchClass(semitones); const octave = Math.floor(semitones / 12);
+  const label = [...raga.arohana, ...raga.avarohana].find((swara) => pitchClass(swara.semitones) === position)?.label.replace(/[̣̇]/g, '') ?? 'S';
+  return <span className="practice-svara">{label[0]}{octave > 0 ? '̇' : octave < 0 ? '̣' : ''}<small>{label.slice(1)}</small></span>;
+}
+
+export function PracticeSection({ raga, tradition, sruti, temperament, voice, kampita, onBeforeStart, interrupt }: { raga: Raga; tradition: Tradition; sruti: number; temperament: Temperament; voice: Voice; kampita: boolean; onBeforeStart: () => void; interrupt: number }) {
+  const [saved, setSaved] = useState(readSaved); const [octave, setOctave] = useState(0); const [position, setPosition] = useState<PracticePosition | null>(null); const [running, setRunning] = useState(false);
+  const handle = useRef<PracticeHandle | null>(null); const taps = useRef<number[]>([]);
+  const save = (change: Partial<Saved>) => setSaved((previous) => { const next = { ...previous, ...change }; try { localStorage.setItem(STORE, JSON.stringify(next)); } catch {} return next; });
+
+  const library = useMemo(() => presets(raga, tradition), [raga, tradition]);
+  const text = saved.patterns[raga.id] ?? library[0].text; const setText = (value: string) => save({ patterns: { ...saved.patterns, [raga.id]: value } });
+  const parsed = useMemo(() => parsePattern(text, raga, tradition), [text, raga, tradition]);
+  const talas = [...PLAIN, ...TALAS[tradition]]; const tala = talas.find((item) => item.id === saved.tala[tradition]) ?? talas[1];
+  const accents = useMemo(() => accentsOf(tala), [tala]);
+  const pattern = useMemo(() => timed(parsed, { speed: saved.speed, barBeats: saved.bar, accents, click: saved.click }), [parsed, saved.speed, saved.bar, accents, saved.click]);
+  const playable = parsed.errors.length === 0 && parsed.notes > 0; const fitted = fitsBars(parsed, saved.bar);
+  const settings = useMemo<PracticeSettings>(() => ({ pattern, bpm: saved.bpm, melody: saved.melody, sruti, temperament, voice, kampita }), [pattern, saved.bpm, saved.melody, sruti, temperament, voice, kampita]);
+
+  const stop = () => { handle.current?.stop(); handle.current = null; setRunning(false); setPosition(null); };
+  const start = () => { if (!playable) return; onBeforeStart(); handle.current?.stop(); handle.current = startPractice(settings, { countIn: saved.countIn && saved.click !== 'off' ? COUNT_IN : 0, onPosition: setPosition }); setRunning(true); };
+  // A running loop follows the controls. A pattern that stops making sense mid-edit is
+  // not sent, so the loop keeps playing the last one that did.
+  useEffect(() => { if (handle.current && playable) handle.current.update(settings); }, [settings, playable]);
+  // Another rāga is another exercise, and the page's own playback shares the speakers:
+  // leaving this rāga, the page playing something itself, or the section going away all end the loop.
+  useEffect(() => () => { handle.current?.stop(); handle.current = null; setRunning(false); setPosition(null); }, [raga.id, tradition, interrupt]);
+
+  // Spaces mean nothing in a pattern, so the buttons write none: S, R, –, | gives SR-|.
+  const append = (token: string) => setText(text.trimEnd() + token);
+  const backspace = () => { const trimmed = text.trimEnd(); const last = [...trimmed.matchAll(WRITTEN)].at(-1); setText(last ? trimmed.slice(0, last.index).trimEnd() : ''); };
+  const tap = () => { const now = performance.now(); taps.current = [...taps.current.filter((at) => now - at < 2500), now].slice(-5); if (taps.current.length < 2) return; const gaps = taps.current.slice(1).map((at, index) => at - taps.current[index]); save({ bpm: Math.max(30, Math.min(240, Math.round(60000 / (gaps.reduce((sum, gap) => sum + gap, 0) / gaps.length)))) }); };
+
+  // The preview is laid out bar by bar, so a line can break between bars but never inside one.
+  const barred = useMemo(() => parsed.bars.map((slots, bar) => { const from = parsed.bars.slice(0, bar).reduce((sum, size) => sum + size, 0); return parsed.beats.slice(from, from + slots); }), [parsed]);
+  const palette = useMemo(() => [...variantsOf(raga, tradition).values()].flat().map((item) => item.position).sort((a, b) => a - b), [raga, tradition]);
+  const element = (item: PatternElement, key: number) => item.kind === 'hold' ? <span className="practice-mark" key={key}>–</span> : item.kind === 'rest' ? <span className={`practice-mark ${position?.step === item.step ? 'now' : ''}`} key={key}>·</span> : <span className={`practice-note ${position?.step === item.step ? 'now' : ''} ${position && !position.audible ? 'silent' : ''}`} key={key}><Note semitones={item.semitones} raga={raga} tradition={tradition} /></span>;
+  // The lights follow the tāla when there is one, and otherwise count through a bar.
+  const lights = accents.length > 1 ? accents : fitted && Number.isInteger(saved.bar / saved.speed) ? Array.from({ length: saved.bar / saved.speed }, (_, index) => (index === 0 ? 2 : 0)) : [];
+  const words = WORDS[tradition]; const beatNow = position ? position.beat % Math.max(1, lights.length) : -1;
+  const barText = fitted ? `${parsed.bars.length} bars × ${+(saved.bar / saved.speed).toFixed(2)} beats · ` : '';
+  const status = !running ? (playable ? `${barText}${pattern.loopBeats} beats a round · ${parsed.notes} notes` : parsed.errors[0] ?? 'Write a few notes to begin')
+    : position?.countIn ? `Count-in · ${COUNT_IN - position.beat}` : saved.melody === 'alternate' ? (position?.audible === false ? `Round ${(position?.loop ?? 0) + 1} · your turn` : `Round ${(position?.loop ?? 0) + 1} · listen`) : `Round ${(position?.loop ?? 0) + 1}`;
+
+  return <section className="practice-section" aria-label="Practice loop">
+    <div className="section-label"><span>Practice loop</span><em>write a sargam in {raga.name}, set the beat, and it repeats until you stop it · spaces never matter · each bar ( | ) lasts the same number of beats, however many notes it holds · notes in ( ) share one slot</em></div>
+    <div className="practice-pattern">
+      <textarea id="practice-pattern" aria-label="Sargam to practise" aria-invalid={parsed.errors.length > 0} rows={2} spellCheck={false} autoCapitalize="off" autoCorrect="off" value={text} onChange={(event) => setText(event.target.value)} placeholder="SRG|RGM|GMP" />
+      <div className="practice-preview" aria-hidden="true">{barred.map((beats, bar) => <span className="practice-bar-group" key={bar}>{beats.map((beat, index) => <span className={`practice-beat ${beat.error ? 'bad' : ''} ${beat.grouped ? 'group' : ''}`} key={index} title={beat.error ?? (beat.grouped ? 'These share one slot' : undefined)}>{beat.error ? beat.text : beat.elements.map(element)}</span>)}{bar < barred.length - 1 && <span className="practice-bar" />}</span>)}</div>
+      <output className={`practice-status ${!running && !playable ? 'bad' : ''}`}>{status}</output>
+    </div>
+    <div className="practice-row">
+      <span className="practice-caption">Notes</span>
+      <div className="practice-keys">{palette.map((item) => <button key={item} type="button" onClick={() => append(typed(item + 12 * octave, raga, tradition))} aria-label={`Add ${typed(item + 12 * octave, raga, tradition)}`}><Note semitones={item + 12 * octave} raga={raga} tradition={tradition} /></button>)}<button type="button" onClick={() => append(typed(12 * (octave + 1), raga, tradition))} aria-label="Add the Sa above"><Note semitones={12 * (octave + 1)} raga={raga} tradition={tradition} /></button></div>
+      <fieldset className="practice-seg" aria-label="Octave for the note buttons">{([[-1, 'Low'], [0, 'Mid'], [1, 'High']] as const).map(([value, label]) => <button aria-pressed={octave === value} key={value} onClick={() => setOctave(value)} type="button">{label}</button>)}</fieldset>
+      <div className="practice-keys tools"><button type="button" onClick={() => append('-')} title="Hold the note before for another slot">– hold</button><button type="button" onClick={() => append(',')} title="A slot of silence">, rest</button><button type="button" onClick={() => append('|')} title="Bar line: each bar lasts the same number of beats">| bar</button><button type="button" onClick={() => append('(')} title="Start a group: the notes inside the brackets share one slot">(</button><button type="button" onClick={() => append(')')} title="End the group">)</button><button type="button" onClick={backspace} aria-label="Remove the last thing written">⌫</button><button type="button" onClick={() => setText('')}>Clear</button></div>
+    </div>
+    <div className="practice-row">
+      <span className="practice-caption">Exercises</span>
+      <div className="practice-keys presets">{library.map((item) => <button className={item.text === text ? 'active' : ''} key={item.id} onClick={() => setText(item.text)} type="button">{item.label}</button>)}</div>
+    </div>
+    <div className="practice-row transport">
+      {running ? <button className="practice-go stop" type="button" onClick={stop}>■ Stop</button> : <button className="practice-go" type="button" onClick={start} disabled={!playable}>▶ Start loop</button>}
+      <label className="practice-field bpm" htmlFor="practice-bpm"><span>Tempo</span><input id="practice-bpm-range" aria-label="Tempo slider" type="range" min="30" max="240" step="1" value={saved.bpm} onChange={(event) => save({ bpm: Number(event.target.value) })} /><input id="practice-bpm" type="number" min="30" max="240" value={saved.bpm} onChange={(event) => { const value = Number(event.target.value); if (Number.isFinite(value)) save({ bpm: Math.max(30, Math.min(240, Math.round(value))) }); }} /><em>bpm</em><button type="button" onClick={tap} title="Tap along to set the tempo">Tap</button></label>
+      <div className="practice-field"><span>{words.speed}</span><fieldset className="practice-seg" aria-label={`${words.speed}: notes per beat`}>{[1, 2, 3, 4].map((value, index) => <button aria-pressed={saved.speed === value} key={value} onClick={() => save({ speed: value })} title={words.speeds[index]} type="button">{value}×</button>)}</fieldset></div>
+      <label className="practice-field" htmlFor="practice-bar"><span>Bar</span><select id="practice-bar" value={saved.bar} onChange={(event) => save({ bar: Number(event.target.value) })} title="How many beats each bar ( | ) lasts. Its notes share that time equally, however many there are.">{BAR_LENGTHS.map((value) => <option key={value} value={value}>{value === 0 ? 'As written' : `${value} beats`}</option>)}</select></label>
+      <label className="practice-field" htmlFor="practice-tala"><span>{words.tala}</span><select id="practice-tala" value={tala.id} onChange={(event) => save({ tala: { ...saved.tala, [tradition]: event.target.value } })}>{talas.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+      <div className="practice-field"><span>Click</span><fieldset className="practice-seg" aria-label="Metronome click">{([['beat', 'Every beat', 'A click on every beat'], ['bar', 'Bar starts', 'A click only on the first beat of each bar'], ['off', 'Off', 'No click']] as const).map(([value, label, hint]) => <button aria-pressed={saved.click === value} key={value} onClick={() => save({ click: value })} title={hint} type="button">{label}</button>)}</fieldset></div>
+      <div className="practice-field"><span>Melody</span><fieldset className="practice-seg" aria-label="Melody">{([['on', 'Play', 'The app plays every round'], ['alternate', 'Repeat after me', 'The app plays one round, then leaves the next to you with only the beat and drone'], ['off', 'Beat only', 'No melody, only the beat']] as const).map(([value, label, hint]) => <button aria-pressed={saved.melody === value} key={value} onClick={() => save({ melody: value })} title={hint} type="button">{label}</button>)}</fieldset></div>
+      <label className="practice-check" htmlFor="practice-countin"><input id="practice-countin" type="checkbox" checked={saved.countIn} disabled={saved.click === 'off'} onChange={(event) => save({ countIn: event.target.checked })} /> {COUNT_IN}-beat count-in</label>
+    </div>
+    {lights.length > 1 && <div className="practice-lights" aria-hidden="true">{lights.map((weight, index) => <i className={`w${weight} ${index === beatNow && running && !position?.countIn ? 'on' : ''} ${weight > 0 && index > 0 ? 'gap' : ''}`} key={index} />)}</div>}
+  </section>;
+}
