@@ -152,6 +152,10 @@
   /* ---------- 2. spacing grid ---------- */
   const offGrid = new Map();
   for (const el of all) {
+    // Visually-hidden elements carry sr-only offsets (margin: -1px, 1x1 boxes) that are a
+    // technique, not a spacing decision, so counting them would just add noise.
+    const box = el.getBoundingClientRect();
+    if (box.width < 2 || box.height < 2) continue;
     const s = getComputedStyle(el);
     for (const prop of ['paddingTop','paddingRight','paddingBottom','paddingLeft','marginTop','marginBottom','gap','rowGap','columnGap']) {
       const raw = s[prop];

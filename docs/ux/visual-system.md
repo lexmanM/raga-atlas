@@ -104,6 +104,49 @@ Placeholder text at 2.8:1 is the most common contrast failure in production apps
 
 **Working in OKLCH pays off**: equal lightness steps look equal, which HSL does not deliver (HSL yellow at 50% lightness is far brighter than HSL blue at 50%). Generate ramps by stepping L and holding C and H.
 
+## Control taxonomy
+
+The rule: **form follows consequence.** A control's visual weight should track how
+much of the product it changes. When two controls share a shape, users read them
+as peers — so a cosmetic preference styled like a mode switch teaches people that
+neither one matters.
+
+Every interactive element in Rāga Atlas belongs to exactly one of these roles, and
+each role has exactly one signature. If a new control does not fit a row, the row
+is wrong and gets revised — do not invent an eighth style.
+
+| Role | Question it answers | Signature | Here |
+|---|---|---|---|
+| **Scope** | *Which world am I in?* | Pill group, **filled** active segment (`--prototype-gold` on `--on-accent`), 13px, 600 weight. The heaviest control on the page | Carnatic ⇄ Hindustani |
+| **Navigation** | *Which view?* | Underlined tabs, 2px accent bottom border on active, no container | Atlas / Guitar |
+| **Filter** | *Which subset?* | Quiet chips attached to the list they narrow, hairline border at `.16` | All / Mela / Janya |
+| **Action** | *Do it now* | Button, `8px` radius, 1px border at `.4`; the primary action is the only gold fill outside Scope | Ārohana, Start loop |
+| **Toggle** | *On or off?* | Switch affordance — track and knob. Never a button that merely looks pressed | Drone, Keyboard, Click |
+| **Input** | *Give me a value* | Inset background, `2px` radius, visible label above | Rāga field, tempo, sargam box |
+| **Preference** | *How should it look?* | The quietest thing on screen: icon-only, name on `aria-label` and `title` | Theme |
+
+Two supporting scales keep the signatures apart, and both are closed sets:
+
+- **Radius carries meaning.** `2px` input · `8px` button or key · `999px` segment group.
+  Nothing else. Six arbitrary radii is the same as none.
+- **Border alpha carries emphasis.** `.16` quiet · `.4` emphasis. Two values.
+
+**Uppercase is a section-label device, not a control device.** When every control is
+uppercase with wide tracking, caps stop signalling importance and start costing
+legibility — all-caps removes the word shapes people scan by. Controls are sentence
+case; uppercase with `.3em` tracking is reserved for section labels.
+
+### Section hierarchy
+
+Three levels, visibly different, or a long page reads as an undifferentiated list:
+
+1. **Page subject** — the rāga name, `clamp(38px, 5vw, 76px)` display serif.
+2. **Section heading** — **18–22px**. The zone a reader navigates by.
+3. **Sub-label** — 12px uppercase, `.3em` tracking, accent at `.72`.
+
+Levels 2 and 3 collapsing into one style is the most common way a page ends up
+feeling like "a lot of features" with no sense of what is present.
+
 ## Elevation and depth
 
 **Shadows are two layers, not one.** A tight ambient shadow for contact plus a soft directional one for lift:
