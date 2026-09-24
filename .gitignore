@@ -37,3 +37,10 @@ yarn-error.log*
 /outputs/
 /work/
 package-lock.json
+
+# personal agent/editor configuration (never tracked; see AGENTS.md)
+/.claude/
+/.openai/
+/.cursor/
+/.codex/
+/.github/copilot-instructions.md

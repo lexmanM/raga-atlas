@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,9 +14,37 @@ const forbiddenPaths = [
   '.github/copilot-instructions.md',
 ];
 
+// AGENTS.md permits agent-specific helpers as untracked personal configuration,
+// so the rule is about what version control carries, not what sits in a working
+// copy. Fall back to presence only when git cannot answer (an unpacked tarball).
+function listTrackedFiles() {
+  try {
+    const output = execFileSync('git', ['ls-files', '-z'], {
+      cwd: repository,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return new Set(output.split('\0').filter(Boolean));
+  } catch {
+    return null;
+  }
+}
+
+const trackedFiles = listTrackedFiles();
+
+function isTracked(path) {
+  if (trackedFiles === null) return existsSync(join(repository, path));
+  if (trackedFiles.has(path)) return true;
+  const prefix = `${path}/`;
+  for (const file of trackedFiles) {
+    if (file.startsWith(prefix)) return true;
+  }
+  return false;
+}
+
 for (const path of forbiddenPaths) {
-  if (existsSync(join(repository, path))) {
-    failures.push(`agent-specific repository path: ${path}`);
+  if (isTracked(path)) {
+    failures.push(`agent-specific path in version control: ${path}`);
   }
 }
 
