@@ -2901,7 +2901,7 @@ body { background-image: radial-gradient(80% 90% at 70% 0%, var(--bg-wash), tran
    so adding it cannot push the picker onto another row. */
 /* This swaps the catalogue, the notation and every label below it, so it carries the
    most weight of any control on the page: a filled segment, not a tinted wash. */
-.tradition-switch { display: flex; align-self: stretch; box-sizing: border-box; width: 0; min-width: 100%; gap: 3px; margin: 0 0 4px; padding: 3px; border: 1px solid rgb(var(--accent-rgb) / .4); border-radius: 999px; }
+.tradition-switch { display: flex; align-self: stretch; box-sizing: border-box; gap: 3px; margin: 0 0 4px; padding: 3px; border: 1px solid rgb(var(--accent-rgb) / .4); border-radius: 999px; }
 .tradition-switch button { flex: 1 1 auto; padding: 7px 12px; border: 0; border-radius: 999px; background: none; color: rgb(var(--text-rgb) / .6); font: inherit; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: background .18s ease, color .18s ease; }
 .tradition-switch button:hover { color: rgb(var(--text-rgb) / .95); }
 .tradition-switch button[aria-pressed='true'] { background: var(--prototype-gold); color: var(--on-accent); font-weight: 600; }

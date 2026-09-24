@@ -125,6 +125,13 @@ is wrong and gets revised — do not invent an eighth style.
 | **Input** | *Give me a value* | Inset background, `2px` radius, visible label above | Rāga field, tempo, sargam box |
 | **Preference** | *How should it look?* | The quietest thing on screen: icon-only, name on `aria-label` and `title` | Theme |
 
+**A segment group sizes to its own content.** Never pin one to a sibling's width
+(`width: 0; min-width: 100%` against a neighbouring logo, say). Its labels are
+`white-space: nowrap` and cannot shrink, so the moment the labels outgrow the
+borrowed width they spill straight through the border — and the page reports no
+horizontal scroll while it happens, so nothing catches it but your eyes.
+`scripts/ux-audit.js` now reports this as *escaping*.
+
 Two supporting scales keep the signatures apart, and both are closed sets:
 
 - **Radius carries meaning.** `2px` input · `8px` button or key · `999px` segment group.

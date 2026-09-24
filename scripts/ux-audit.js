@@ -287,6 +287,28 @@
     verdict: h1s !== 1 ? `${h1s} h1 elements — expected exactly 1` : breaks.length ? `${breaks.length} skipped heading levels` : 'ok',
   };
 
+  /* ---------- 6b. content escaping its own container ---------- */
+  // A box that draws a border or background is making a promise about where its
+  // contents end. Children that spill past it (nowrap labels in a box sized by
+  // something else, long words, fixed-width grids) break that promise visibly
+  // while the page itself still reports no horizontal scroll.
+  const escaping = [];
+  for (const el of all) {
+    const s = getComputedStyle(el);
+    if (s.overflowX !== 'visible') continue;
+    const draws = parseFloat(s.borderRightWidth) > 0 || (parse(s.backgroundColor)?.a ?? 0) > 0;
+    if (!draws) continue;
+    const spill = el.scrollWidth - el.clientWidth;
+    if (spill > 1 && el.clientWidth > 0) {
+      escaping.push({ el: sel(el), text: snippet(el), boxWidth: el.clientWidth, contentWidth: el.scrollWidth, overflowBy: `${spill}px` });
+    }
+  }
+  report.contentOverflow = {
+    escaping: escaping.sort((a, b) => b.contentWidth - a.contentWidth).slice(0, 12),
+    total: escaping.length,
+    verdict: escaping.length ? `${escaping.length} elements whose content escapes their own border` : 'ok',
+  };
+
   /* ---------- 7. overflow / responsive ---------- */
   const docW = document.documentElement.clientWidth;
   const overflowing = all.filter((el) => {
@@ -310,6 +332,7 @@
     `  targets:   ${report.tapTargets.verdict}`,
     `  headings:  ${report.headings.verdict}`,
     `  layout:    ${report.layout.verdict}`,
+    `  escaping:  ${report.contentOverflow.verdict}`,
     `  unlabeled controls: ${unlabeled.length} | img without alt attr: ${noAlt.length} | non-semantic click handlers: ${divButtons.length}`,
   ];
   report.summary = lines.join('\n');
