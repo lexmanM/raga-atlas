@@ -90,3 +90,11 @@ npm run check:agnostic
 ## License
 
 Rāga Atlas is available under the [MIT License](LICENSE).
+
+## Design standards
+
+Interface decisions follow the documented UX standards in [`docs/ux/`](docs/ux/) —
+type scale, spacing grid, color and contrast, interaction states, and the
+WCAG 2.2 AA floor. `scripts/ux-audit.js` measures a running page against them
+from the browser console; see [`docs/ux/README.md`](docs/ux/README.md) for the
+review process.
