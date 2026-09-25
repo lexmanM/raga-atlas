@@ -21,8 +21,9 @@ prototype: a searchable atlas, a taxonomy primer, playable arohana and
 avarohana note paths, tonic and tempo controls, Tambura drone, spectrum view,
 and chromatic svarasthāna map.
 
-Everything runs locally in the browser. No accounts, telemetry, cloud storage,
-recording archive, or backend service are required.
+Everything runs locally in the browser. No accounts, cloud storage, recording
+archive, or backend service are required, and local builds send no telemetry
+(the public site's anonymous counts are described under [Hosting](#hosting)).
 
 ## Run locally
 
@@ -66,17 +67,45 @@ which builds the site and publishes it to the `gh-pages` branch that GitHub
 Pages serves. [`public/CNAME`](public/CNAME) tells GitHub Pages which domain
 to use; `ragaatlas.com` and `lexmanm.github.io/raga-atlas/` redirect to it.
 
-Hosts that serve the site from a subpath need that subpath as `BASE_PATH` at
-build time:
+Any static host that serves `dist/` from the root of a domain works (Netlify,
+Cloudflare Pages, a plain web server, a GitHub Pages custom domain), with the
+build command `npm run build`. The host has to serve `raga/yaman.html` at
+`/raga/yaman` and `404.html` for unknown paths; GitHub Pages, Netlify and
+Cloudflare Pages all do this by default. Page links are absolute (`/raga/…`),
+so serving the site from a subpath is not supported.
 
-```bash
-BASE_PATH=/raga-atlas/ npm run build
-```
+### Pages, search and link previews
 
-Hosts that serve from the root of a domain (Netlify, Cloudflare Pages, a plain
-web server, or a GitHub Pages custom domain) need no setting; the default base
-is `/`. In every case the deployable output is the `dist/` directory, with the
-build command `npm run build`.
+The site is pre-rendered: `npm run build` builds the browser app, then a server
+copy of the same React app ([`app/entry-server.tsx`](app/entry-server.tsx)),
+and [`scripts/prerender.mjs`](scripts/prerender.mjs) writes a complete HTML
+file for the home page and every rāga and thāṭ. Search engines, link previews
+and AI tools read the content without running any JavaScript; in the browser,
+React adopts that HTML and the controls work as before.
+
+- Rāgas live at `/raga/<slug>` and thāṭs at `/thaat/<slug>`, from
+  [`lib/routes.ts`](lib/routes.ts). A name found in both traditions takes the
+  tradition as a suffix (`/raga/hamsadhwani-carnatic`), and two pages on one
+  address stop the build.
+- Titles, descriptions, canonical URLs and Open Graph/Twitter tags come from
+  [`lib/seo.ts`](lib/seo.ts); every page shares `public/og-image.png`.
+- The build also writes `sitemap.xml`, `robots.txt`, `llms.txt` (the whole
+  catalogue as Markdown for AI tools) and `404.html`.
+- Anything read from browser storage (theme, śruti, the home page's tradition,
+  saved loops, the welcome) waits for `useHydrated()` in
+  [`lib/hydrated.ts`](lib/hydrated.ts), so the first browser render matches the
+  pre-rendered HTML. New code that reads `window`, `document` or
+  `localStorage` while rendering needs the same care; `npm run build` fails if
+  it runs on the server.
+
+`npm run dev` still serves the plain browser app, with no pre-rendering.
+
+### Adding a rāga
+
+Add one line to the catalogue: `janya(...)` in [`lib/ragas.ts`](lib/ragas.ts)
+for Carnatic, or `raga(...)` in [`lib/hindustani.ts`](lib/hindustani.ts) for
+Hindustani. Its page, address, metadata, related links, index entry, sitemap
+and `llms.txt` line all follow from the data on the next build.
 
 The public build counts anonymous visits and a few actions (tradition switched,
 rāga played, drone and practice started) with [GoatCounter](https://www.goatcounter.com),

@@ -55,10 +55,8 @@ jobs:
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
           set -euo pipefail
-          # Pages serves the directory as-is, without Jekyll preprocessing.
-          touch dist/.nojekyll
-          # Single document app: unknown paths fall back to the same page.
-          cp dist/index.html dist/404.html
+          # The build already wrote every page, 404.html, .nojekyll, sitemap.xml and
+          # robots.txt (scripts/prerender.mjs), so dist/ is published as it is.
 
           # Publish from a separate worktree rather than switching branches in
           # place: the source checkout is dirty after npm install, and gh-pages
