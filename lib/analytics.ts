@@ -27,3 +27,10 @@ export function trackEvent(name: string, title?: string) {
   if (!endpoint) return;
   try { window.goatcounter?.count({ path: name, title, event: true }); } catch {}
 }
+
+// The script counts the page it loads on; moving to another rāga inside the app changes
+// the address without a load, so that view is counted here.
+export function trackPageview(path: string, title: string) {
+  if (!endpoint) return;
+  try { window.goatcounter?.count({ path, title }); } catch {}
+}
