@@ -78,6 +78,12 @@ web server, or a GitHub Pages custom domain) need no setting; the default base
 is `/`. In every case the deployable output is the `dist/` directory, with the
 build command `npm run build`.
 
+The public build counts anonymous visits and a few actions (tradition switched,
+rāga played, drone and practice started) with [GoatCounter](https://www.goatcounter.com),
+which sets no cookies. Counting is on only when `VITE_GOATCOUNTER_URL` is set at
+build time, which the deploy workflow does; local builds send nothing. The
+dashboard is at <https://ragaatlas.goatcounter.com>.
+
 ## Development policy
 
 Rāga Atlas is agent agnostic. Its build, runtime, tests, and documentation work

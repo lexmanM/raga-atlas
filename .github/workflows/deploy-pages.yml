@@ -42,6 +42,9 @@ jobs:
 
       - name: Build
         # The custom domain serves from the root, so the default base of `/` applies.
+        # Only this build turns on visitor counts; see lib/analytics.ts.
+        env:
+          VITE_GOATCOUNTER_URL: https://ragaatlas.goatcounter.com/count
         run: npm run build
 
       - name: Publish to the gh-pages branch

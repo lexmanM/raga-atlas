@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { trackEvent } from '@/lib/analytics';
 import { startPractice, type PracticeHandle, type PracticePosition, type PracticeSettings, type Temperament, type Voice } from '@/lib/audio-engine';
 import { HINDUSTANI_ALL } from '@/lib/hindustani';
 import { accentsOf, fitsBars, parsePattern, PLAIN, presets, respell, TALAS, timed, typed, variantsOf, WRITTEN, type PatternElement, type Timing } from '@/lib/practice';
@@ -58,7 +59,7 @@ export function PracticeSection({ raga, tradition, sruti, temperament, voice, ka
   const settings = useMemo<PracticeSettings>(() => ({ pattern, bpm: saved.bpm, melody: saved.melody, sruti, temperament, voice, kampita }), [pattern, saved.bpm, saved.melody, sruti, temperament, voice, kampita]);
 
   const stop = () => { handle.current?.stop(); handle.current = null; setRunning(false); setPosition(null); };
-  const start = () => { if (!playable) return; onBeforeStart(); handle.current?.stop(); handle.current = startPractice(settings, { countIn: saved.countIn && saved.click !== 'off' ? COUNT_IN : 0, onPosition: setPosition }); setRunning(true); };
+  const start = () => { if (!playable) return; onBeforeStart(); handle.current?.stop(); handle.current = startPractice(settings, { countIn: saved.countIn && saved.click !== 'off' ? COUNT_IN : 0, onPosition: setPosition }); setRunning(true); trackEvent('practice/start'); };
   // A running loop follows the controls. A pattern that stops making sense mid-edit is
   // not sent, so the loop keeps playing the last one that did.
   useEffect(() => { if (handle.current && playable) handle.current.update(settings); }, [settings, playable]);
