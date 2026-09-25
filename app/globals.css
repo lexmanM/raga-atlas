@@ -3005,3 +3005,22 @@ body { background-image: radial-gradient(80% 90% at 70% 0%, var(--bg-wash), tran
 .practice-save button { min-height: 38px; padding: 6px 14px; border: 1px solid var(--prototype-gold); border-radius: 8px; background: transparent; color: var(--accent-strong); font: inherit; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
 .practice-save button:disabled { opacity: .4; cursor: default; }
 .practice-origin { margin: 0; padding: 8px 10px; border-left: 2px solid var(--prototype-gold); background: rgb(var(--accent-rgb) / .07); color: rgb(var(--text-rgb) / .7); font-size: 11px; letter-spacing: .04em; }
+
+/* About the rāga, its related links and the browse-all index: prose and real links,
+   so the page reads the same with or without the script. */
+.raga-about { display: flex; flex-direction: column; gap: 16px; }
+.raga-summary, .raga-note { max-width: 65ch; margin: 0; color: rgb(var(--text-rgb) / .78); font-size: 14px; line-height: 1.6; }
+.raga-note strong { margin-right: 8px; color: rgb(var(--accent-rgb) / .72); font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.raga-related { display: grid; grid-template-columns: max-content 1fr; gap: 8px 24px; margin: 0; font-size: 14px; line-height: 1.6; }
+.raga-related > div { display: contents; }
+.raga-related dt { color: rgb(var(--text-rgb) / .7); }
+.raga-related dd { margin: 0; }
+.raga-about a, .raga-index a { color: var(--text-strong); text-decoration: underline; text-decoration-color: rgb(var(--accent-rgb) / .4); text-underline-offset: 4px; }
+.raga-about a:hover, .raga-index a:hover { text-decoration-color: rgb(var(--accent-rgb)); }
+.raga-index a[aria-current="page"] { color: rgb(var(--accent-rgb)); text-decoration: none; }
+.raga-index { margin: 0 clamp(24px,4vw,56px) 48px; padding-top: 24px; border-top: 1px solid rgb(var(--accent-rgb) / .12); }
+.raga-index summary { padding: 8px 0; color: rgb(var(--text-rgb) / .78); font-size: 14px; cursor: pointer; }
+.raga-index section { margin-top: 24px; }
+.raga-index h2 { margin: 0 0 12px; color: rgb(var(--accent-rgb) / .72); font-size: 12px; font-weight: 400; letter-spacing: .3em; text-transform: uppercase; }
+.raga-index ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 4px 24px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.6; }
+@media (max-width: 680px) { .raga-related { grid-template-columns: 1fr; gap: 0; } .raga-related dd { margin-bottom: 12px; } .raga-index { margin: 0 16px 48px; } }
