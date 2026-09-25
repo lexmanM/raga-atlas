@@ -1,7 +1,9 @@
 name: Deploy to GitHub Pages
 
 # Builds the static site and publishes it to the `gh-pages` branch, which
-# GitHub Pages serves at https://lexmanm.github.io/raga-atlas/.
+# GitHub Pages serves at https://www.ragaatlas.com/. The domain comes from
+# public/CNAME, which lands in every build; without it each publish would
+# clear the custom domain setting.
 # Nothing here is required to build or run Raga Atlas locally.
 
 on:
@@ -39,8 +41,7 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: Build
-        env:
-          BASE_PATH: /raga-atlas/
+        # The custom domain serves from the root, so the default base of `/` applies.
         run: npm run build
 
       - name: Publish to the gh-pages branch

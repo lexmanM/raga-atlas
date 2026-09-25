@@ -58,12 +58,13 @@ may require a user gesture so the browser can resume its audio context.
 
 ## Hosting
 
-The public build lives at <https://lexmanm.github.io/raga-atlas/>.
+The public build lives at <https://www.ragaatlas.com/>.
 
 Rāga Atlas is a static site with no backend, so any static host works. Pushing
 to `main` runs [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml),
 which builds the site and publishes it to the `gh-pages` branch that GitHub
-Pages serves.
+Pages serves. [`public/CNAME`](public/CNAME) tells GitHub Pages which domain
+to use; `ragaatlas.com` and `lexmanm.github.io/raga-atlas/` redirect to it.
 
 Hosts that serve the site from a subpath need that subpath as `BASE_PATH` at
 build time:
