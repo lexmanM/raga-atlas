@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { trackEvent } from '@/lib/analytics';
+import { useHydrated } from '@/lib/hydrated';
 import { startPractice, type PracticeHandle, type PracticePosition, type PracticeSettings, type Temperament, type Voice } from '@/lib/audio-engine';
 import { HINDUSTANI_ALL } from '@/lib/hindustani';
 import { accentsOf, fitsBars, parsePattern, PLAIN, presets, respell, TALAS, timed, typed, variantsOf, WRITTEN, type PatternElement, type Timing } from '@/lib/practice';
@@ -40,9 +41,11 @@ function Note({ semitones, raga, tradition }: { semitones: number; raga: Raga; t
 }
 
 export function PracticeSection({ raga, tradition, sruti, temperament, voice, kampita, onBeforeStart, interrupt }: { raga: Raga; tradition: Tradition; sruti: number; temperament: Temperament; voice: Voice; kampita: boolean; onBeforeStart: () => void; interrupt: number }) {
-  const [saved, setSaved] = useState(readSaved); const [octave, setOctave] = useState(0); const [name, setName] = useState(''); const [deleting, setDeleting] = useState<string | null>(null); const [position, setPosition] = useState<PracticePosition | null>(null); const [running, setRunning] = useState(false);
+  // Saved loops live in the browser, so they are read once hydration is done; until then the defaults match the pre-rendered HTML.
+  const hydrated = useHydrated(); const stored = useMemo(() => (hydrated ? readSaved() : DEFAULTS), [hydrated]);
+  const [edited, setSaved] = useState<Saved | null>(null); const saved = edited ?? stored; const [octave, setOctave] = useState(0); const [name, setName] = useState(''); const [deleting, setDeleting] = useState<string | null>(null); const [position, setPosition] = useState<PracticePosition | null>(null); const [running, setRunning] = useState(false);
   const handle = useRef<PracticeHandle | null>(null); const taps = useRef<number[]>([]);
-  const save = (change: Partial<Saved>) => setSaved((previous) => { const next = { ...previous, ...change }; try { localStorage.setItem(STORE, JSON.stringify(next)); } catch {} return next; });
+  const save = (change: Partial<Saved>) => setSaved((previous) => { const next = { ...(previous ?? stored), ...change }; try { localStorage.setItem(STORE, JSON.stringify(next)); } catch {} return next; });
 
   const library = useMemo(() => presets(raga, tradition), [raga, tradition]);
   // What is shown is always spelt for the open rāga. A written pattern that came from another

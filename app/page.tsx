@@ -2,6 +2,7 @@ import { RagaLibrary, THEMES, type Theme } from '@/components/raga-library';
 import type { Raga } from '@/lib/ragas';
 import { ragaAt, traditionOf } from '@/lib/routes';
 import type { Tradition } from '@/lib/traditions';
+import { useHydrated } from '@/lib/hydrated';
 import { useCallback, useState } from 'react';
 
 const SRUTI_KEY = 'ragas.sruti';
@@ -36,9 +37,15 @@ function readTheme(): Theme {
 export default function Home({ path }: { path: string }) {
   // A rāga address decides the tradition; the bare home page falls back to the reader's last choice.
   const [initial] = useState<Raga | undefined>(() => ragaAt(path));
-  const [sruti, setSruti] = useState(readSruti);
-  const [theme, setTheme] = useState(readTheme);
-  const [tradition, setTradition] = useState<Tradition>(() => (initial ? traditionOf(initial) : readTradition()));
+  // Stored choices exist only in the browser, so until hydration the defaults stand in
+  // for them; a choice made on this visit wins over both.
+  const hydrated = useHydrated();
+  const [chosenSruti, setSruti] = useState<number | null>(null);
+  const [chosenTheme, setTheme] = useState<Theme | null>(null);
+  const [chosenTradition, setTradition] = useState<Tradition | null>(null);
+  const sruti = chosenSruti ?? (hydrated ? readSruti() : DEFAULT_SRUTI);
+  const theme = chosenTheme ?? (hydrated ? readTheme() : 'night');
+  const tradition = chosenTradition ?? (initial ? traditionOf(initial) : hydrated ? readTradition() : 'carnatic');
   const changeSruti = useCallback((value: number) => {
     setSruti(value);
     try { localStorage.setItem(SRUTI_KEY, String(value)); } catch {}
