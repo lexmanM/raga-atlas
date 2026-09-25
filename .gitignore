@@ -17,6 +17,7 @@ __pycache__/
 
 # frontend build
 /dist/
+/dist-server/
 vite.config.*.timestamp-*
 
 # misc

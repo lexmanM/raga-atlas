@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 
 import App from '@/app/page';
 import '@/app/globals.css';
@@ -13,8 +13,14 @@ if (!root) {
 
 initAnalytics();
 
-createRoot(root).render(
+const app = (
   <StrictMode>
     <App path={window.location.pathname} />
-  </StrictMode>,
+  </StrictMode>
 );
+
+// A built page arrives already rendered and React takes it over; the dev server sends
+// an empty root. The not-found page holds the home page's HTML under whatever address
+// was asked for, so it is drawn afresh rather than adopted.
+if (root.hasChildNodes() && !root.hasAttribute('data-fallback')) hydrateRoot(root, app);
+else createRoot(root).render(app);
