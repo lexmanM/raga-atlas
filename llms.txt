@@ -6,99 +6,99 @@ Carnatic notes are written S R1 R2 R3 G1 G2 G3 M1 M2 P D1 D2 D3 N1 N2 N3, with t
 
 ## Carnatic melakartas
 
-- [Kanakangi](https://www.ragaatlas.com/raga/kanakangi): Kanakangi is melakarta 1 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G1 R1 S.
-- [Ratnangi](https://www.ragaatlas.com/raga/ratnangi): Ratnangi is melakarta 2 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G1 R1 S.
-- [Ganamurti](https://www.ragaatlas.com/raga/ganamurti): Ganamurti is melakarta 3 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G1 R1 S.
-- [Vanaspati](https://www.ragaatlas.com/raga/vanaspati): Vanaspati is melakarta 4 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G1 R1 S.
-- [Manavati](https://www.ragaatlas.com/raga/manavati): Manavati is melakarta 5 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G1 R1 S.
-- [Tanarupi](https://www.ragaatlas.com/raga/tanarupi): Tanarupi is melakarta 6 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G1 R1 S.
-- [Senavati](https://www.ragaatlas.com/raga/senavati): Senavati is melakarta 7 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G2 R1 S.
-- [Hanumatodi](https://www.ragaatlas.com/raga/hanumatodi): Hanumatodi is melakarta 8 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G2 R1 S.
-- [Dhenuka](https://www.ragaatlas.com/raga/dhenuka): Dhenuka is melakarta 9 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G2 R1 S.
-- [Natakapriya](https://www.ragaatlas.com/raga/natakapriya): Natakapriya is melakarta 10 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G2 R1 S.
-- [Kokilapriya](https://www.ragaatlas.com/raga/kokilapriya): Kokilapriya is melakarta 11 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G2 R1 S.
-- [Rupavati](https://www.ragaatlas.com/raga/rupavati): Rupavati is melakarta 12 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G2 R1 S.
-- [Gayakapriya](https://www.ragaatlas.com/raga/gayakapriya): Gayakapriya is melakarta 13 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G3 R1 S.
-- [Vakulabharanam](https://www.ragaatlas.com/raga/vakulabharanam): Vakulabharanam is melakarta 14 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G3 R1 S.
-- [Mayamalavagowla](https://www.ragaatlas.com/raga/mayamalavagowla): Mayamalavagowla is melakarta 15 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G3 R1 S.
-- [Chakravakam](https://www.ragaatlas.com/raga/chakravakam): Chakravakam is melakarta 16 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G3 R1 S.
-- [Suryakantam](https://www.ragaatlas.com/raga/suryakantam): Suryakantam is melakarta 17 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G3 R1 S.
-- [Hatakambari](https://www.ragaatlas.com/raga/hatakambari): Hatakambari is melakarta 18 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G3 R1 S.
-- [Jhankaradhwani](https://www.ragaatlas.com/raga/jhankaradhwani): Jhankaradhwani is melakarta 19 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G2 R2 S.
-- [Natabhairavi](https://www.ragaatlas.com/raga/natabhairavi): Natabhairavi is melakarta 20 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G2 R2 S.
-- [Keeravani](https://www.ragaatlas.com/raga/keeravani): Keeravani is melakarta 21 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G2 R2 S.
-- [Kharaharapriya](https://www.ragaatlas.com/raga/kharaharapriya): Kharaharapriya is melakarta 22 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G2 R2 S.
-- [Gourimanohari](https://www.ragaatlas.com/raga/gourimanohari): Gourimanohari is melakarta 23 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G2 R2 S.
-- [Varunapriya](https://www.ragaatlas.com/raga/varunapriya): Varunapriya is melakarta 24 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G2 R2 S.
-- [Mararanjani](https://www.ragaatlas.com/raga/mararanjani): Mararanjani is melakarta 25 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G3 R2 S.
-- [Charukesi](https://www.ragaatlas.com/raga/charukesi): Charukesi is melakarta 26 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G3 R2 S.
-- [Sarasangi](https://www.ragaatlas.com/raga/sarasangi): Sarasangi is melakarta 27 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G3 R2 S.
-- [Harikambhoji](https://www.ragaatlas.com/raga/harikambhoji): Harikambhoji is melakarta 28 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G3 R2 S.
-- [Dheerasankarabharanam](https://www.ragaatlas.com/raga/dheerasankarabharanam): Dheerasankarabharanam is melakarta 29 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G3 R2 S.
-- [Naganandini](https://www.ragaatlas.com/raga/naganandini): Naganandini is melakarta 30 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G3 R2 S.
-- [Yagapriya](https://www.ragaatlas.com/raga/yagapriya): Yagapriya is melakarta 31 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M1 G3 R3 S.
-- [Ragavardhini](https://www.ragaatlas.com/raga/ragavardhini): Ragavardhini is melakarta 32 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M1 G3 R3 S.
-- [Gangeyabhushani](https://www.ragaatlas.com/raga/gangeyabhushani): Gangeyabhushani is melakarta 33 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M1 G3 R3 S.
-- [Vagadheeswari](https://www.ragaatlas.com/raga/vagadheeswari): Vagadheeswari is melakarta 34 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M1 G3 R3 S.
-- [Sulini](https://www.ragaatlas.com/raga/sulini): Sulini is melakarta 35 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M1 G3 R3 S.
-- [Chalanata](https://www.ragaatlas.com/raga/chalanata): Chalanata is melakarta 36 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M1 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M1 G3 R3 S.
-- [Salagam](https://www.ragaatlas.com/raga/salagam): Salagam is melakarta 37 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G1 R1 S.
-- [Jalarnavam](https://www.ragaatlas.com/raga/jalarnavam): Jalarnavam is melakarta 38 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G1 R1 S.
-- [Jhalavarali](https://www.ragaatlas.com/raga/jhalavarali): Jhalavarali is melakarta 39 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G1 R1 S.
-- [Navaneetam](https://www.ragaatlas.com/raga/navaneetam): Navaneetam is melakarta 40 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G1 R1 S.
-- [Pavani](https://www.ragaatlas.com/raga/pavani): Pavani is melakarta 41 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G1 R1 S.
-- [Raghupriya](https://www.ragaatlas.com/raga/raghupriya): Raghupriya is melakarta 42 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G1 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G1 R1 S.
-- [Gavambodhi](https://www.ragaatlas.com/raga/gavambodhi): Gavambodhi is melakarta 43 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G2 R1 S.
-- [Bhavapriya](https://www.ragaatlas.com/raga/bhavapriya): Bhavapriya is melakarta 44 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G2 R1 S.
-- [Subhapantuvarali](https://www.ragaatlas.com/raga/subhapantuvarali): Subhapantuvarali is melakarta 45 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G2 R1 S.
-- [Shadvidhamargini](https://www.ragaatlas.com/raga/shadvidhamargini): Shadvidhamargini is melakarta 46 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G2 R1 S.
-- [Suvarnangi](https://www.ragaatlas.com/raga/suvarnangi): Suvarnangi is melakarta 47 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G2 R1 S.
-- [Divyamani](https://www.ragaatlas.com/raga/divyamani): Divyamani is melakarta 48 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G2 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G2 R1 S.
-- [Dhavalambari](https://www.ragaatlas.com/raga/dhavalambari): Dhavalambari is melakarta 49 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G3 R1 S.
-- [Namanarayani](https://www.ragaatlas.com/raga/namanarayani): Namanarayani is melakarta 50 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G3 R1 S.
-- [Kamavardhini](https://www.ragaatlas.com/raga/kamavardhini): Kamavardhini is melakarta 51 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G3 R1 S.
-- [Ramapriya](https://www.ragaatlas.com/raga/ramapriya): Ramapriya is melakarta 52 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G3 R1 S.
-- [Gamanashrama](https://www.ragaatlas.com/raga/gamanashrama): Gamanashrama is melakarta 53 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G3 R1 S.
-- [Vishwambari](https://www.ragaatlas.com/raga/vishwambari): Vishwambari is melakarta 54 of the 72 parent rāgas in Carnatic music. Ārohana S R1 G3 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G3 R1 S.
-- [Shamalangi](https://www.ragaatlas.com/raga/shamalangi): Shamalangi is melakarta 55 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G2 R2 S.
-- [Shanmukhapriya](https://www.ragaatlas.com/raga/shanmukhapriya): Shanmukhapriya is melakarta 56 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G2 R2 S.
-- [Simhendramadhyamam](https://www.ragaatlas.com/raga/simhendramadhyamam): Simhendramadhyamam is melakarta 57 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G2 R2 S.
-- [Hemavati](https://www.ragaatlas.com/raga/hemavati): Hemavati is melakarta 58 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G2 R2 S.
-- [Dharmavati](https://www.ragaatlas.com/raga/dharmavati): Dharmavati is melakarta 59 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G2 R2 S.
-- [Neetimati](https://www.ragaatlas.com/raga/neetimati): Neetimati is melakarta 60 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G2 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G2 R2 S.
-- [Kantamani](https://www.ragaatlas.com/raga/kantamani): Kantamani is melakarta 61 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G3 R2 S.
-- [Rishabhapriya](https://www.ragaatlas.com/raga/rishabhapriya): Rishabhapriya is melakarta 62 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G3 R2 S.
-- [Latangi](https://www.ragaatlas.com/raga/latangi): Latangi is melakarta 63 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G3 R2 S.
-- [Vachaspati](https://www.ragaatlas.com/raga/vachaspati): Vachaspati is melakarta 64 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G3 R2 S.
-- [Mechakalyani](https://www.ragaatlas.com/raga/mechakalyani): Mechakalyani is melakarta 65 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G3 R2 S.
-- [Chitrambari](https://www.ragaatlas.com/raga/chitrambari): Chitrambari is melakarta 66 of the 72 parent rāgas in Carnatic music. Ārohana S R2 G3 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G3 R2 S.
-- [Sucharitra](https://www.ragaatlas.com/raga/sucharitra): Sucharitra is melakarta 67 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D1 N1 Ṡ; avarohana Ṡ N1 D1 P M2 G3 R3 S.
-- [Jyotiswarupini](https://www.ragaatlas.com/raga/jyotiswarupini): Jyotiswarupini is melakarta 68 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D1 N2 Ṡ; avarohana Ṡ N2 D1 P M2 G3 R3 S.
-- [Dhatuvardhani](https://www.ragaatlas.com/raga/dhatuvardhani): Dhatuvardhani is melakarta 69 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D1 N3 Ṡ; avarohana Ṡ N3 D1 P M2 G3 R3 S.
-- [Nasikabhushani](https://www.ragaatlas.com/raga/nasikabhushani): Nasikabhushani is melakarta 70 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D2 N2 Ṡ; avarohana Ṡ N2 D2 P M2 G3 R3 S.
-- [Kosalam](https://www.ragaatlas.com/raga/kosalam): Kosalam is melakarta 71 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D2 N3 Ṡ; avarohana Ṡ N3 D2 P M2 G3 R3 S.
-- [Rasikapriya](https://www.ragaatlas.com/raga/rasikapriya): Rasikapriya is melakarta 72 of the 72 parent rāgas in Carnatic music. Ārohana S R3 G3 M2 P D3 N3 Ṡ; avarohana Ṡ N3 D3 P M2 G3 R3 S.
+- [Kanakangi](https://www.ragaatlas.com/raga/kanakangi): Kanakangi is melakarta 1 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G1 R1 S.
+- [Ratnangi](https://www.ragaatlas.com/raga/ratnangi): Ratnangi is melakarta 2 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G1 R1 S.
+- [Ganamurti](https://www.ragaatlas.com/raga/ganamurti): Ganamurti is melakarta 3 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G1 R1 S.
+- [Vanaspati](https://www.ragaatlas.com/raga/vanaspati): Vanaspati is melakarta 4 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G1 R1 S.
+- [Manavati](https://www.ragaatlas.com/raga/manavati): Manavati is melakarta 5 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G1 R1 S.
+- [Tanarupi](https://www.ragaatlas.com/raga/tanarupi): Tanarupi is melakarta 6 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G1 R1 S.
+- [Senavati](https://www.ragaatlas.com/raga/senavati): Senavati is melakarta 7 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G2 R1 S.
+- [Todi](https://www.ragaatlas.com/raga/todi-carnatic): Todi, also called Hanumatodi, is melakarta 8 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G2 R1 S.
+- [Dhenuka](https://www.ragaatlas.com/raga/dhenuka): Dhenuka is melakarta 9 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G2 R1 S.
+- [Natakapriya](https://www.ragaatlas.com/raga/natakapriya): Natakapriya is melakarta 10 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G2 R1 S.
+- [Kokilapriya](https://www.ragaatlas.com/raga/kokilapriya): Kokilapriya is melakarta 11 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G2 R1 S.
+- [Rupavati](https://www.ragaatlas.com/raga/rupavati): Rupavati is melakarta 12 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G2 R1 S.
+- [Gayakapriya](https://www.ragaatlas.com/raga/gayakapriya): Gayakapriya is melakarta 13 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G3 R1 S.
+- [Vakulabharanam](https://www.ragaatlas.com/raga/vakulabharanam): Vakulabharanam is melakarta 14 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G3 R1 S.
+- [Mayamalavagowla](https://www.ragaatlas.com/raga/mayamalavagowla): Mayamalavagowla is melakarta 15 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G3 R1 S.
+- [Chakravakam](https://www.ragaatlas.com/raga/chakravakam): Chakravakam is melakarta 16 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G3 R1 S.
+- [Suryakantam](https://www.ragaatlas.com/raga/suryakantam): Suryakantam is melakarta 17 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G3 R1 S.
+- [Hatakambari](https://www.ragaatlas.com/raga/hatakambari): Hatakambari is melakarta 18 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G3 R1 S.
+- [Jhankaradhwani](https://www.ragaatlas.com/raga/jhankaradhwani): Jhankaradhwani is melakarta 19 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G2 R2 S.
+- [Natabhairavi](https://www.ragaatlas.com/raga/natabhairavi): Natabhairavi is melakarta 20 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G2 R2 S.
+- [Keeravani](https://www.ragaatlas.com/raga/keeravani): Keeravani is melakarta 21 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G2 R2 S.
+- [Kharaharapriya](https://www.ragaatlas.com/raga/kharaharapriya): Kharaharapriya is melakarta 22 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G2 R2 S.
+- [Gourimanohari](https://www.ragaatlas.com/raga/gourimanohari): Gourimanohari is melakarta 23 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G2 R2 S.
+- [Varunapriya](https://www.ragaatlas.com/raga/varunapriya): Varunapriya is melakarta 24 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G2 R2 S.
+- [Mararanjani](https://www.ragaatlas.com/raga/mararanjani): Mararanjani is melakarta 25 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G3 R2 S.
+- [Charukesi](https://www.ragaatlas.com/raga/charukesi): Charukesi is melakarta 26 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G3 R2 S.
+- [Sarasangi](https://www.ragaatlas.com/raga/sarasangi): Sarasangi is melakarta 27 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G3 R2 S.
+- [Harikambhoji](https://www.ragaatlas.com/raga/harikambhoji): Harikambhoji is melakarta 28 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G3 R2 S.
+- [Sankarabharanam](https://www.ragaatlas.com/raga/sankarabharanam): Sankarabharanam, also called Dheerasankarabharanam, is melakarta 29 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G3 R2 S.
+- [Naganandini](https://www.ragaatlas.com/raga/naganandini): Naganandini is melakarta 30 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G3 R2 S.
+- [Yagapriya](https://www.ragaatlas.com/raga/yagapriya): Yagapriya is melakarta 31 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M1 G3 R3 S.
+- [Ragavardhini](https://www.ragaatlas.com/raga/ragavardhini): Ragavardhini is melakarta 32 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M1 G3 R3 S.
+- [Gangeyabhushani](https://www.ragaatlas.com/raga/gangeyabhushani): Gangeyabhushani is melakarta 33 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G3 R3 S.
+- [Vagadheeswari](https://www.ragaatlas.com/raga/vagadheeswari): Vagadheeswari is melakarta 34 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G3 R3 S.
+- [Sulini](https://www.ragaatlas.com/raga/sulini): Sulini is melakarta 35 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G3 R3 S.
+- [Chalanata](https://www.ragaatlas.com/raga/chalanata): Chalanata is melakarta 36 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M1 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M1 G3 R3 S.
+- [Salagam](https://www.ragaatlas.com/raga/salagam): Salagam is melakarta 37 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G1 R1 S.
+- [Jalarnavam](https://www.ragaatlas.com/raga/jalarnavam): Jalarnavam is melakarta 38 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G1 R1 S.
+- [Jhalavarali](https://www.ragaatlas.com/raga/jhalavarali): Jhalavarali is melakarta 39 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G1 R1 S.
+- [Navaneetam](https://www.ragaatlas.com/raga/navaneetam): Navaneetam is melakarta 40 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G1 R1 S.
+- [Pavani](https://www.ragaatlas.com/raga/pavani): Pavani is melakarta 41 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G1 R1 S.
+- [Raghupriya](https://www.ragaatlas.com/raga/raghupriya): Raghupriya is melakarta 42 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G1 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G1 R1 S.
+- [Gavambodhi](https://www.ragaatlas.com/raga/gavambodhi): Gavambodhi is melakarta 43 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G2 R1 S.
+- [Bhavapriya](https://www.ragaatlas.com/raga/bhavapriya): Bhavapriya is melakarta 44 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G2 R1 S.
+- [Subhapantuvarali](https://www.ragaatlas.com/raga/subhapantuvarali): Subhapantuvarali is melakarta 45 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G2 R1 S.
+- [Shadvidhamargini](https://www.ragaatlas.com/raga/shadvidhamargini): Shadvidhamargini is melakarta 46 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G2 R1 S.
+- [Suvarnangi](https://www.ragaatlas.com/raga/suvarnangi): Suvarnangi is melakarta 47 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G2 R1 S.
+- [Divyamani](https://www.ragaatlas.com/raga/divyamani): Divyamani is melakarta 48 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G2 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G2 R1 S.
+- [Dhavalambari](https://www.ragaatlas.com/raga/dhavalambari): Dhavalambari is melakarta 49 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G3 R1 S.
+- [Namanarayani](https://www.ragaatlas.com/raga/namanarayani): Namanarayani is melakarta 50 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G3 R1 S.
+- [Pantuvarali](https://www.ragaatlas.com/raga/pantuvarali): Pantuvarali, also called Kamavardhini, is melakarta 51 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G3 R1 S.
+- [Ramapriya](https://www.ragaatlas.com/raga/ramapriya): Ramapriya is melakarta 52 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G3 R1 S.
+- [Gamanashrama](https://www.ragaatlas.com/raga/gamanashrama): Gamanashrama is melakarta 53 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G3 R1 S.
+- [Vishwambari](https://www.ragaatlas.com/raga/vishwambari): Vishwambari is melakarta 54 of the 72 parent rāgas in Carnatic music. Arohanam: S R1 G3 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G3 R1 S.
+- [Shamalangi](https://www.ragaatlas.com/raga/shamalangi): Shamalangi is melakarta 55 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G2 R2 S.
+- [Shanmukhapriya](https://www.ragaatlas.com/raga/shanmukhapriya): Shanmukhapriya is melakarta 56 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G2 R2 S.
+- [Simhendramadhyamam](https://www.ragaatlas.com/raga/simhendramadhyamam): Simhendramadhyamam is melakarta 57 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G2 R2 S.
+- [Hemavati](https://www.ragaatlas.com/raga/hemavati): Hemavati is melakarta 58 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G2 R2 S.
+- [Dharmavati](https://www.ragaatlas.com/raga/dharmavati): Dharmavati is melakarta 59 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G2 R2 S.
+- [Neetimati](https://www.ragaatlas.com/raga/neetimati): Neetimati is melakarta 60 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G2 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G2 R2 S.
+- [Kantamani](https://www.ragaatlas.com/raga/kantamani): Kantamani is melakarta 61 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G3 R2 S.
+- [Rishabhapriya](https://www.ragaatlas.com/raga/rishabhapriya): Rishabhapriya is melakarta 62 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G3 R2 S.
+- [Latangi](https://www.ragaatlas.com/raga/latangi): Latangi is melakarta 63 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G3 R2 S.
+- [Vachaspati](https://www.ragaatlas.com/raga/vachaspati): Vachaspati is melakarta 64 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G3 R2 S.
+- [Kalyani](https://www.ragaatlas.com/raga/kalyani): Kalyani, also called Mechakalyani, is melakarta 65 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G3 R2 S.
+- [Chitrambari](https://www.ragaatlas.com/raga/chitrambari): Chitrambari is melakarta 66 of the 72 parent rāgas in Carnatic music. Arohanam: S R2 G3 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G3 R2 S.
+- [Sucharitra](https://www.ragaatlas.com/raga/sucharitra): Sucharitra is melakarta 67 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D1 N1 Ṡ. Avarohanam: Ṡ N1 D1 P M2 G3 R3 S.
+- [Jyotiswarupini](https://www.ragaatlas.com/raga/jyotiswarupini): Jyotiswarupini is melakarta 68 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 P M2 G3 R3 S.
+- [Dhatuvardhani](https://www.ragaatlas.com/raga/dhatuvardhani): Dhatuvardhani is melakarta 69 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D1 N3 Ṡ. Avarohanam: Ṡ N3 D1 P M2 G3 R3 S.
+- [Nasikabhushani](https://www.ragaatlas.com/raga/nasikabhushani): Nasikabhushani is melakarta 70 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 P M2 G3 R3 S.
+- [Kosalam](https://www.ragaatlas.com/raga/kosalam): Kosalam is melakarta 71 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D2 N3 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G3 R3 S.
+- [Rasikapriya](https://www.ragaatlas.com/raga/rasikapriya): Rasikapriya is melakarta 72 of the 72 parent rāgas in Carnatic music. Arohanam: S R3 G3 M2 P D3 N3 Ṡ. Avarohanam: Ṡ N3 D3 P M2 G3 R3 S.
 
 ## Carnatic janya rāgas
 
-- [Mohanam](https://www.ragaatlas.com/raga/mohanam): Mohanam is a Carnatic janya rāga derived from melakarta 28, Harikambhoji. Ārohana S R2 G3 P D2 Ṡ; avarohana Ṡ D2 P G3 R2 S.
-- [Hamsadhwani](https://www.ragaatlas.com/raga/hamsadhwani-carnatic): Hamsadhwani is a Carnatic janya rāga derived from melakarta 29, Dheerasankarabharanam. Ārohana S R2 G3 P N3 Ṡ; avarohana Ṡ N3 P G3 R2 S.
-- [Malahari](https://www.ragaatlas.com/raga/malahari): Malahari is a Carnatic janya rāga derived from melakarta 15, Mayamalavagowla. Ārohana S R1 M1 P D1 Ṡ; avarohana Ṡ D1 P M1 G3 R1 S.
-- [Abhogi](https://www.ragaatlas.com/raga/abhogi): Abhogi is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Ārohana S R2 G2 M1 D2 Ṡ; avarohana Ṡ D2 M1 G2 R2 S.
-- [Sriranjani](https://www.ragaatlas.com/raga/sriranjani): Sriranjani is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Ārohana S R2 G2 M1 D2 N2 Ṡ; avarohana Ṡ N2 D2 M1 G2 R2 S.
-- [Hindolam](https://www.ragaatlas.com/raga/hindolam): Hindolam is a Carnatic janya rāga derived from melakarta 20, Natabhairavi. Ārohana S G2 M1 D1 N2 Ṡ; avarohana Ṡ N2 D1 M1 G2 S.
-- [Madhyamavati](https://www.ragaatlas.com/raga/madhyamavati): Madhyamavati is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Ārohana S R2 M1 P N2 Ṡ; avarohana Ṡ N2 P M1 R2 S.
-- [Suddha Saveri](https://www.ragaatlas.com/raga/suddha-saveri): Suddha Saveri is a Carnatic janya rāga derived from melakarta 29, Dheerasankarabharanam. Ārohana S R2 M1 P D2 Ṡ; avarohana Ṡ D2 P M1 R2 S.
-- [Bilahari](https://www.ragaatlas.com/raga/bilahari): Bilahari is a Carnatic janya rāga derived from melakarta 29, Dheerasankarabharanam. Ārohana S R2 G3 P D2 Ṡ; avarohana Ṡ N3 D2 P M1 G3 R2 S.
-- [Mohanakalyani](https://www.ragaatlas.com/raga/mohanakalyani): Mohanakalyani is a Carnatic janya rāga derived from melakarta 65, Mechakalyani. Ārohana S R2 G3 P D2 Ṡ; avarohana Ṡ N3 D2 P M2 G3 R2 S.
-- [Kambhoji](https://www.ragaatlas.com/raga/kambhoji): Kambhoji is a Carnatic janya rāga derived from melakarta 28, Harikambhoji. Ārohana S R2 G3 M1 P D2 Ṡ; avarohana Ṡ N2 D2 P M1 G3 R2 S.
-- [Anandabhairavi](https://www.ragaatlas.com/raga/anandabhairavi): Anandabhairavi is a Carnatic janya rāga derived from melakarta 20, Natabhairavi. Ārohana S G2 R2 G2 M1 P D2 P Ṡ; avarohana Ṡ N2 D2 P M1 G2 R2 S.
-- [Arabhi](https://www.ragaatlas.com/raga/arabhi): Arabhi is a Carnatic janya rāga derived from melakarta 29, Dheerasankarabharanam. Ārohana S R2 M1 P D2 Ṡ; avarohana Ṡ N3 D2 P M1 G3 R2 S.
-- [Saveri](https://www.ragaatlas.com/raga/saveri): Saveri is a Carnatic janya rāga derived from melakarta 15, Mayamalavagowla. Ārohana S R1 M1 P D1 Ṡ; avarohana Ṡ N3 D1 P M1 G3 R1 S.
-- [Nattai](https://www.ragaatlas.com/raga/nattai): Nattai is a Carnatic janya rāga derived from melakarta 36, Chalanata. Ārohana S R3 G3 M1 P N3 Ṡ; avarohana Ṡ N3 P M1 R3 S.
-- [Revati](https://www.ragaatlas.com/raga/revati): Revati is a Carnatic janya rāga derived from melakarta 2, Ratnangi. Ārohana S R1 M1 P N2 Ṡ; avarohana Ṡ N2 P M1 R1 S.
-- [Sivaranjani](https://www.ragaatlas.com/raga/sivaranjani): Sivaranjani is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Ārohana S R2 G2 P D2 Ṡ; avarohana Ṡ D2 P G2 R2 S.
-- [Kanada](https://www.ragaatlas.com/raga/kanada): Kanada is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Ārohana S R2 G2 M1 P D2 N2 Ṡ; avarohana Ṡ N2 P M1 G2 M1 R2 S.
+- [Mohanam](https://www.ragaatlas.com/raga/mohanam): Mohanam is a Carnatic janya rāga derived from melakarta 28, Harikambhoji. Arohanam: S R2 G3 P D2 Ṡ. Avarohanam: Ṡ D2 P G3 R2 S.
+- [Hamsadhwani](https://www.ragaatlas.com/raga/hamsadhwani-carnatic): Hamsadhwani is a Carnatic janya rāga derived from melakarta 29, Sankarabharanam. Arohanam: S R2 G3 P N3 Ṡ. Avarohanam: Ṡ N3 P G3 R2 S.
+- [Malahari](https://www.ragaatlas.com/raga/malahari): Malahari is a Carnatic janya rāga derived from melakarta 15, Mayamalavagowla. Arohanam: S R1 M1 P D1 Ṡ. Avarohanam: Ṡ D1 P M1 G3 R1 S.
+- [Abhogi](https://www.ragaatlas.com/raga/abhogi): Abhogi is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Arohanam: S R2 G2 M1 D2 Ṡ. Avarohanam: Ṡ D2 M1 G2 R2 S.
+- [Sriranjani](https://www.ragaatlas.com/raga/sriranjani): Sriranjani is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Arohanam: S R2 G2 M1 D2 N2 Ṡ. Avarohanam: Ṡ N2 D2 M1 G2 R2 S.
+- [Hindolam](https://www.ragaatlas.com/raga/hindolam): Hindolam is a Carnatic janya rāga derived from melakarta 20, Natabhairavi. Arohanam: S G2 M1 D1 N2 Ṡ. Avarohanam: Ṡ N2 D1 M1 G2 S.
+- [Madhyamavati](https://www.ragaatlas.com/raga/madhyamavati): Madhyamavati is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Arohanam: S R2 M1 P N2 Ṡ. Avarohanam: Ṡ N2 P M1 R2 S.
+- [Suddha Saveri](https://www.ragaatlas.com/raga/suddha-saveri): Suddha Saveri is a Carnatic janya rāga derived from melakarta 29, Sankarabharanam. Arohanam: S R2 M1 P D2 Ṡ. Avarohanam: Ṡ D2 P M1 R2 S.
+- [Bilahari](https://www.ragaatlas.com/raga/bilahari): Bilahari is a Carnatic janya rāga derived from melakarta 29, Sankarabharanam. Arohanam: S R2 G3 P D2 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G3 R2 S.
+- [Mohanakalyani](https://www.ragaatlas.com/raga/mohanakalyani): Mohanakalyani is a Carnatic janya rāga derived from melakarta 65, Kalyani. Arohanam: S R2 G3 P D2 Ṡ. Avarohanam: Ṡ N3 D2 P M2 G3 R2 S.
+- [Kambhoji](https://www.ragaatlas.com/raga/kambhoji): Kambhoji is a Carnatic janya rāga derived from melakarta 28, Harikambhoji. Arohanam: S R2 G3 M1 P D2 Ṡ. Avarohanam: Ṡ N2 D2 P M1 G3 R2 S.
+- [Anandabhairavi](https://www.ragaatlas.com/raga/anandabhairavi): Anandabhairavi is a Carnatic janya rāga derived from melakarta 20, Natabhairavi. Arohanam: S G2 R2 G2 M1 P D2 P Ṡ. Avarohanam: Ṡ N2 D2 P M1 G2 R2 S.
+- [Arabhi](https://www.ragaatlas.com/raga/arabhi): Arabhi is a Carnatic janya rāga derived from melakarta 29, Sankarabharanam. Arohanam: S R2 M1 P D2 Ṡ. Avarohanam: Ṡ N3 D2 P M1 G3 R2 S.
+- [Saveri](https://www.ragaatlas.com/raga/saveri): Saveri is a Carnatic janya rāga derived from melakarta 15, Mayamalavagowla. Arohanam: S R1 M1 P D1 Ṡ. Avarohanam: Ṡ N3 D1 P M1 G3 R1 S.
+- [Nattai](https://www.ragaatlas.com/raga/nattai): Nattai is a Carnatic janya rāga derived from melakarta 36, Chalanata. Arohanam: S R3 G3 M1 P N3 Ṡ. Avarohanam: Ṡ N3 P M1 R3 S.
+- [Revati](https://www.ragaatlas.com/raga/revati): Revati is a Carnatic janya rāga derived from melakarta 2, Ratnangi. Arohanam: S R1 M1 P N2 Ṡ. Avarohanam: Ṡ N2 P M1 R1 S.
+- [Sivaranjani](https://www.ragaatlas.com/raga/sivaranjani): Sivaranjani is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Arohanam: S R2 G2 P D2 Ṡ. Avarohanam: Ṡ D2 P G2 R2 S.
+- [Kanada](https://www.ragaatlas.com/raga/kanada): Kanada is a Carnatic janya rāga derived from melakarta 22, Kharaharapriya. Arohanam: S R2 G2 M1 P D2 N2 Ṡ. Avarohanam: Ṡ N2 P M1 G2 M1 R2 S.
 
 ## Hindustani rāgas
 
@@ -130,7 +130,7 @@ Carnatic notes are written S R1 R2 R3 G1 G2 G3 M1 M2 P D1 D2 D3 N1 N2 N3, with t
 - [Darbari Kanada](https://www.ragaatlas.com/raga/darbari-kanada): Darbari Kanada is a Hindustani rāga of Asavari thāṭ, sung 12–3 am (midnight). Vādī Re, samvādī Pa. Āroha: Sa, Re, komal Ga, Ma, Pa, komal Dha, komal Ni, upper Sa. Avaroha: upper Sa, komal Dha, komal Ni, Pa, Ma, Pa, komal Ga, Ma, Re, Sa.
 - [Bhairavi](https://www.ragaatlas.com/raga/bhairavi): Bhairavi is a Hindustani rāga of Bhairavi thāṭ, sung 6–9 am (early morning). Vādī Ma, samvādī Sa. Āroha: Sa, komal Re, komal Ga, Ma, Pa, komal Dha, komal Ni, upper Sa. Avaroha: upper Sa, komal Ni, komal Dha, Pa, Ma, komal Ga, komal Re, Sa.
 - [Malkauns](https://www.ragaatlas.com/raga/malkauns): Malkauns is a Hindustani rāga of Bhairavi thāṭ, sung 12–3 am (midnight). Vādī Ma, samvādī Sa. Āroha: Sa, komal Ga, Ma, komal Dha, komal Ni, upper Sa. Avaroha: upper Sa, komal Ni, komal Dha, Ma, komal Ga, Sa.
-- [Todi](https://www.ragaatlas.com/raga/todi): Todi is a Hindustani rāga of Todi thāṭ, sung 9–12 am (late morning). Vādī komal Dha, samvādī komal Ga. Āroha: Sa, komal Re, komal Ga, tivra Ma, komal Dha, Ni, upper Sa. Avaroha: upper Sa, Ni, komal Dha, Pa, tivra Ma, komal Ga, komal Re, Sa.
+- [Todi](https://www.ragaatlas.com/raga/todi-hindustani): Todi is a Hindustani rāga of Todi thāṭ, sung 9–12 am (late morning). Vādī komal Dha, samvādī komal Ga. Āroha: Sa, komal Re, komal Ga, tivra Ma, komal Dha, Ni, upper Sa. Avaroha: upper Sa, Ni, komal Dha, Pa, tivra Ma, komal Ga, komal Re, Sa.
 - [Multani](https://www.ragaatlas.com/raga/multani): Multani is a Hindustani rāga of Todi thāṭ, sung 3–6 pm (dusk). Vādī Pa, samvādī Sa. Āroha: lower Ni, Sa, komal Ga, tivra Ma, Pa, Ni, upper Sa. Avaroha: upper Sa, Ni, komal Dha, Pa, tivra Ma, komal Ga, komal Re, Sa.
 
 ## Hindustani thāṭs
