@@ -20,13 +20,18 @@ const carnaticLine = (notes: Swara[]) => notes.map((note) => note.label).join(' 
 const swarNames = (raga: Raga) => [...new Set([...raga.arohana, ...raga.avarohana].map((note) => pitchClass(note.semitones)))].sort((a, b) => a - b).map((position) => SWARS[position].name).join(', ');
 const hindustaniLine = (notes: Swara[]) => notes.map((note) => `${note.semitones < 0 ? 'lower ' : note.semitones > 11 ? 'upper ' : ''}${SWARS[pitchClass(note.semitones)].name}`).join(', ');
 
+// Carnatic prose uses the spelling people type into a search box — arohanam,
+// avarohanam — rather than the transliterated Ārohana the page's labels use.
+const called = (raga: Raga) => raga.formalName ? `${raga.name}, also called ${raga.formalName},` : raga.name;
+const carnaticScale = (raga: Raga) => `Arohanam: ${carnaticLine(ascent(raga))}. Avarohanam: ${carnaticLine(descent(raga))}.`;
+
 /** One or two plain sentences that say what the rāga is, for the page itself and for its meta description. */
 export function describe(raga: Raga): string {
   switch (raga.group) {
     case 'melakarta':
-      return `${raga.name} is melakarta ${raga.parentMela} of the 72 parent rāgas in Carnatic music. Ārohana ${carnaticLine(ascent(raga))}; avarohana ${carnaticLine(descent(raga))}.`;
+      return `${called(raga)} is melakarta ${raga.parentMela} of the 72 parent rāgas in Carnatic music. ${carnaticScale(raga)}`;
     case 'janya':
-      return `${raga.name} is a Carnatic janya rāga derived from melakarta ${raga.parentMela}, ${MELAKARTAS[(raga.parentMela ?? 1) - 1].name}. Ārohana ${carnaticLine(ascent(raga))}; avarohana ${carnaticLine(descent(raga))}.`;
+      return `${raga.name} is a Carnatic janya rāga derived from melakarta ${raga.parentMela}, ${MELAKARTAS[(raga.parentMela ?? 1) - 1].name}. ${carnaticScale(raga)}`;
     case 'thaat': {
       const filed = HINDUSTANI_RAGAS.filter((item) => item.thaat === raga.thaat).map((item) => item.name);
       return `${raga.name} is thāṭ ${raga.thaatNumber} of the ten Hindustani parent scales: ${swarNames(raga)}.${filed.length ? ` Rāgas filed under it here: ${filed.join(', ')}.` : ''}`;
@@ -38,11 +43,18 @@ export function describe(raga: Raga): string {
   }
 }
 
-const kind = (raga: Raga) => ({ melakarta: `Carnatic melakarta ${raga.parentMela}`, janya: 'Carnatic janya rāga', raga: `Hindustani rāga · ${raga.thaat} thāṭ`, thaat: 'Hindustani thāṭ' })[raga.group];
+// Titles lead with the words a search is made of ("Kalyani raga arohanam avarohanam"),
+// unaccented, and push the site name to the end where a truncated title loses it first.
+const heading = (raga: Raga) => ({
+  melakarta: `${raga.name} Raga — Arohanam & Avarohanam, Melakarta ${raga.parentMela}`,
+  janya: `${raga.name} Raga — Arohanam & Avarohanam, Janya of ${MELAKARTAS[(raga.parentMela ?? 1) - 1].name}`,
+  raga: `Raag ${raga.name} — Aroh, Avroh & Pakad, ${raga.thaat} Thaat`,
+  thaat: `${raga.name} Thaat — Hindustani Parent Scale`,
+})[raga.group];
 
 export function pageMeta(raga?: Raga): PageMeta {
   if (!raga) return HOME_META;
-  return { title: `${raga.name} — ${kind(raga)} | ${SITE_NAME}`, description: `${describe(raga)} Hear it, play it and practise with a drone.`, url: `${SITE_URL}${pathOf(raga)}` };
+  return { title: `${heading(raga)} | ${SITE_NAME}`, description: `${describe(raga)} Hear it, play it and practise with a drone.`, url: `${SITE_URL}${pathOf(raga)}` };
 }
 
 const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

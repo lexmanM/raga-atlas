@@ -2,6 +2,8 @@ export type Swara = { label: string; semitones: number };
 export type Raga = {
   id: string;
   name: string;
+  /** The textbook name when musicians and search engines know the rāga by a shorter one (Kalyani is formally Mechakalyani). */
+  formalName?: string;
   // 'melakarta' and 'janya' are Carnatic; 'thaat' and 'raga' are Hindustani.
   group: 'melakarta' | 'janya' | 'thaat' | 'raga';
   parentMela?: number;
@@ -32,6 +34,10 @@ export const MELAKARTA_NAMES = [
   'Kantamani', 'Rishabhapriya', 'Latangi', 'Vachaspati', 'Mechakalyani', 'Chitrambari', 'Sucharitra', 'Jyotiswarupini', 'Dhatuvardhani', 'Nasikabhushani', 'Kosalam', 'Rasikapriya',
 ] as const;
 
+// The name a melakarta is actually sung and searched under, where that differs from
+// its place in the list above. Only unambiguous everyday names belong here.
+const COMMON_NAMES: Partial<Record<number, string>> = { 8: 'Todi', 29: 'Sankarabharanam', 51: 'Pantuvarali', 65: 'Kalyani' };
+
 const labelFor = (degree: 'ri' | 'ga' | 'ma' | 'da' | 'ni', semitones: number): string => {
   const offsets = { ri: 0, ga: 1, ma: 4, da: 7, ni: 8 };
   return `${degree[0].toUpperCase()}${semitones - offsets[degree]}`;
@@ -47,7 +53,8 @@ export function melakarta(number: number): Raga {
     { label: 'S', semitones: 0 }, { label: labelFor('ri', ri), semitones: ri }, { label: labelFor('ga', ga), semitones: ga },
     { label: labelFor('ma', ma), semitones: ma }, { label: 'P', semitones: 7 }, { label: labelFor('da', da), semitones: da }, { label: labelFor('ni', ni), semitones: ni },
   ];
-  return { id: `mela-${number}`, name: MELAKARTA_NAMES[number - 1], group: 'melakarta', parentMela: number, arohana, avarohana: [...arohana].reverse() };
+  const formal = MELAKARTA_NAMES[number - 1]; const common = COMMON_NAMES[number];
+  return { id: `mela-${number}`, name: common ?? formal, ...(common ? { formalName: formal } : {}), group: 'melakarta', parentMela: number, arohana, avarohana: [...arohana].reverse() };
 }
 
 const s = (label: string, semitones: number): Swara => ({ label, semitones });

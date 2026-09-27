@@ -14,7 +14,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const dist = join(root, 'dist');
 const serverDir = join(root, 'dist-server');
 
-const { render, PAGES, pathOf, pageMeta, describe, HOME_META, SITE_URL, withHead } = await import(pathToFileURL(join(serverDir, 'entry-server.js')).href);
+const { render, MOVED, PAGES, pathOf, pageMeta, describe, HOME_META, SITE_URL, withHead } = await import(pathToFileURL(join(serverDir, 'entry-server.js')).href);
 const template = await readFile(join(dist, 'index.html'), 'utf8');
 if (!template.includes('<div id="root"></div>')) throw new Error('dist/index.html has no empty #root to fill');
 
@@ -23,6 +23,14 @@ const write = async (file, content) => { await mkdir(dirname(file), { recursive:
 
 await write(join(dist, 'index.html'), html('/', HOME_META));
 for (const raga of PAGES) await write(join(dist, `${pathOf(raga)}.html`), html(pathOf(raga), pageMeta(raga)));
+
+// GitHub Pages cannot send a 301, so an address that moved gets a page that forwards at
+// once. Search engines treat an immediate refresh as a permanent redirect, and the
+// canonical link names the new address for any that read the page instead.
+for (const [from, to] of MOVED) {
+  const url = `${SITE_URL}${to}`;
+  await write(join(dist, `${from}.html`), `<!doctype html>\n<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <title>Moved to ${url}</title>\n    <link rel="canonical" href="${url}" />\n    <meta http-equiv="refresh" content="0; url=${to}" />\n  </head>\n  <body>\n    <p>This page has moved to <a href="${to}">${url}</a>.</p>\n  </body>\n</html>\n`);
+}
 
 // Unknown addresses get the home page with a not-found status. It is marked so the
 // browser draws it afresh rather than adopting it, and kept out of search results.
@@ -48,4 +56,4 @@ await write(join(dist, 'llms.txt'), [
 
 // The server copy exists only to feed this script.
 await rm(serverDir, { recursive: true, force: true });
-console.log(`Pre-rendered ${PAGES.length + 1} pages, 404.html, sitemap.xml, robots.txt and llms.txt into dist/`);
+console.log(`Pre-rendered ${PAGES.length + 1} pages, ${MOVED.length} redirects, 404.html, sitemap.xml, robots.txt and llms.txt into dist/`);
